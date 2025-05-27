@@ -1,4 +1,6 @@
 @import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;700&display=swap');
+
 @source "../views";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -11,9 +13,6 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
-/* @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-
-
 *{
-    font-family: 'Roboto';
-} */
+    font-family: 'Roboto', sans-serif;
+}
