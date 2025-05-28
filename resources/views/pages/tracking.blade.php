@@ -15,7 +15,7 @@
             <form action="" method="post">
                 @csrf
 
-                <small>Procurement Project <span class="text-red-500">*</span></small>
+                <small>Procurement Projects <span class="text-red-500">*</span></small>
                 <textarea type="text" name="name"
                     class="w-full h-20 p-2 border bg-gray-50 border-gray-300 rounded resize-none text-sm"></textarea>
 
