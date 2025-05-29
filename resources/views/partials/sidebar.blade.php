@@ -7,21 +7,21 @@
 
     <nav class="flex flex-col gap-2 mt-10">
         <a href="/dashboard"
-            class="flex bg-gray-100 items-center gap-2 h-10 text-sm text-gray-700 rounded-full hover:bg-gray-200 hover:text-gray-600 transition-all 
+            class="flex bg-gray-100 items-center gap-2 h-10 text-sm text-gray-700 rounded-md hover:bg-gray-200 hover:text-gray-600 transition-all 
                   {{ request()->routeIs('dashboard') ? 'bg-gray-300 text-gray-700' : '' }}">
             <i class="fas fa-home-alt ml-5"></i>
             Dashboard
         </a>
 
         <a href="/tracking"
-            class="flex bg-gray-100 items-center gap-2 h-10 text-sm text-gray-700 rounded-full hover:bg-gray-200 hover:text-gray-600  transition-all 
+            class="flex bg-gray-100 items-center gap-2 h-10 text-sm text-gray-700 rounded-md hover:bg-gray-200 hover:text-gray-600  transition-all 
                   {{ request()->routeIs('tracking') ? 'bg-gray-300 text-gray-700' : '' }}">
             <i class="fas fa-file ml-5"></i>
             Tracking
         </a>
 
         <a href="/users"
-            class="flex bg-gray-100 items-center gap-2 h-10 text-sm text-gray-700 rounded-full hover:bg-gray-200 hover:text-gray-600  transition-all 
+            class="flex bg-gray-100 items-center gap-2 h-10 text-sm text-gray-700 rounded-md hover:bg-gray-200 hover:text-gray-600  transition-all 
                   {{ request()->routeIs('users') ? 'bg-gray-300 text-gray-700' : '' }}">
             {{-- <i class="ml-5 {{ request()->routeIs('users') ? 'fas fa-user' : 'fa-regular fa-user' }}"></i> --}}
             <i class="fas fa-user ml-5"></i>
@@ -30,7 +30,7 @@
         </a>
 
         <a href="/calendar"
-            class="flex bg-gray-100 items-center gap-2 h-10 text-sm text-gray-700 rounded-full hover:bg-gray-200 hover:text-gray-600 transition-all 
+            class="flex bg-gray-100 items-center gap-2 h-10 text-sm text-gray-700 rounded-md hover:bg-gray-200 hover:text-gray-600 transition-all 
                   {{ request()->routeIs('calendar') ? 'bg-gray-300 text-gray-700' : '' }}">
             <i class="fas fa-calendar ml-5"></i>
             Calendar
@@ -39,6 +39,6 @@
 
 
     <form action="/logout" method="post" class="mt-auto">
-        <button class="bg-red-400 text-white font-bold text-sm rounded-full w-full h-10 cursor-pointer">Logout</button>
+        <button class="bg-red-400 text-white font-bold text-sm rounded-md w-full h-10 cursor-pointer">Logout</button>
     </form>
 </div>

@@ -5,7 +5,7 @@
 @section('content')
     <div class="w-full h-full flex flex-col gap-10 p-10">
 
-        <div class="md:w-full h-full bg-white p-6 rounded-lg shadow-md" x-data="{ lots: [] }">
+        <div class="md:w-full h-full bg-white p-6 rounded-lg" x-data="{ lots: [] }">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-bold text-gray-700 mb-4">Add new PR</h2>
                 <button x-on:click="lots.push({});"
@@ -69,7 +69,7 @@
 
 
 
-        <div class="md:w-full h-full bg-white p-6 rounded-lg shadow-md">
+        <div class="md:w-full h-full bg-white p-6 rounded-lg">
             <h2 class="text-xl font-bold text-gray-700 mb-4">PR Lists</h2>
 
 
