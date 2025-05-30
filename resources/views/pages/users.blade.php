@@ -42,60 +42,87 @@
             <table class="w-full table-auto border-collapse border border-gray-300">
                 <thead class="border-b border-gray-300">
                     <tr class="bg-gray-100 text-gray-600">
-                        <th class="px-4 py-2 text-left text-sm">Status</th>
-                        <th class="px-4 py-2 text-left text-sm">PR Number</th>
-                        <th class="px-4 py-2 text-left text-sm">Procurement Project</th>
-                        <th class="px-4 py-2 text-left text-sm">Total ABC</th>
-                        <th class="px-4 py-2 text-left text-sm">End User</th>
-                        <th class="px-4 py-2 text-left text-sm">View</th>
+                        <th class="px-4 py-2 text-left text-sm">Profile</th>
+                        <th class="px-4 py-2 text-left text-sm">Name</th>
+                        <th class="px-4 py-2 text-left text-sm">Role</th>
+                        <th class="px-4 py-2 text-left text-sm">Username</th>
+                        <th class="px-4 py-2 text-left text-sm">Paasword</th>
+                        <th class="px-4 py-2 text-left text-sm">Action</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     <tr class="border-b border-gray-300">
-                        <td class="px-4 py-2 text-sm text-gray-600">Pending</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">PR12345</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">Office Supplies</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">₱1,500,000.00</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">Admin Department</td>
                         <td class="px-4 py-2 text-sm text-gray-600">
-                            <button class="px-4 py-2 text-white bg-blue-500 rounded-md">View</button>
+                            <div class="w-8 h-8 rounded-full bg-gray-600">
+
+                            </div>
+                        </td>
+                        <td class="px-4 py-2 text-left text-sm">Alice Johnson</td>
+                        <td class="px-4 py-2 text-left text-sm">Manager</td>
+                        <td class="px-4 py-2 text-left text-sm">alicej</td>
+                        <td class="px-4 py-2 text-left text-sm">*******</td>
+                        <td class="px-4 py-2 text-sm text-gray-600 flex gap-2 items-center">
+
+                            <i class="fa-regular fa-eye text-lg text-blue-600"></i>
+                            <i class="fa-regular fa-pen-to-square text-lg text-green-600"></i>
+                            <i class="fa-regular fa-trash-can text-lg text-red-600"></i>
                         </td>
                     </tr>
 
                     <!-- Second Row of Dummy Data -->
                     <tr class="border-b border-gray-300">
-                        <td class="px-4 py-2 text-sm text-gray-600">Completed</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">PR98765</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">IT Equipment</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">₱750,000.00</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">IT Department</td>
                         <td class="px-4 py-2 text-sm text-gray-600">
-                            <button class="px-4 py-2 text-white bg-green-500 rounded-md">View</button>
+                            <div class="w-8 h-8 rounded-full bg-gray-600">
+
+                            </div>
+                        </td>
+                        <td class="px-4 py-2 text-left text-sm">Bob Smith</td>
+                        <td class="px-4 py-2 text-left text-sm">Developer</td>
+                        <td class="px-4 py-2 text-left text-sm">bobsmith</td>
+                        <td class="px-4 py-2 text-left text-sm">**********</td>
+                        <td class="px-4 py-2 text-sm text-gray-600 flex gap-2 items-center">
+
+                            <i class="fa-regular fa-eye text-lg text-blue-600"></i>
+                            <i class="fa-regular fa-pen-to-square text-lg text-green-600"></i>
+                            <i class="fa-regular fa-trash-can text-lg text-red-600"></i>
                         </td>
                     </tr>
 
                     <!-- Third Row of Dummy Data -->
                     <tr class="border-b border-gray-300">
-                        <td class="px-4 py-2 text-sm text-gray-600">Approved</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">PR11223</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">Furniture</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">₱350,000.00</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">HR Department</td>
                         <td class="px-4 py-2 text-sm text-gray-600">
-                            <button class="px-4 py-2 text-white bg-yellow-500 rounded-md">View</button>
+                            <div class="w-8 h-8 rounded-full bg-gray-600">
+
+                            </div>
+                        </td>
+                        <td class="px-4 py-2 text-left text-sm">Charlie Davis</td>
+                        <td class="px-4 py-2 text-left text-sm">Designer</td>
+                        <td class="px-4 py-2 text-left text-sm">charlied</td>
+                        <td class="px-4 py-2 text-left text-sm">*****</td>
+                        <td class="px-4 py-2 text-sm text-gray-600 flex gap-2 items-center">
+
+                            <i class="fa-regular fa-eye text-lg text-blue-600"></i>
+                            <i class="fa-regular fa-pen-to-square text-lg text-green-600"></i>
+                            <i class="fa-regular fa-trash-can text-lg text-red-600"></i>
                         </td>
                     </tr>
 
                     <!-- Fourth Row of Dummy Data -->
                     <tr class="border-b border-gray-300">
-                        <td class="px-4 py-2 text-sm text-gray-600">In Progress</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">PR54321</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">Security Systems</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">₱2,000,000.00</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">Security Department</td>
                         <td class="px-4 py-2 text-sm text-gray-600">
-                            <button class="px-4 py-2 text-white bg-red-500 rounded-md">View</button>
+                            <div class="w-8 h-8 rounded-full bg-gray-600">
+
+                            </div>
+                        </td>
+                        <td class="px-4 py-2 text-left text-sm">Diana Evans</td>
+                        <td class="px-4 py-2 text-left text-sm">Tester</td>
+                        <td class="px-4 py-2 text-left text-sm">dianae</td>
+                        <td class="px-4 py-2 text-left text-sm">********</td>
+                        <td class="px-4 py-2 text-sm text-gray-600 flex gap-2 items-center">
+                            <i class="fa-regular fa-eye text-lg text-blue-600"></i>
+                            <i class="fa-regular fa-pen-to-square text-lg text-green-600"></i>
+                            <i class="fa-regular fa-trash-can text-lg text-red-600"></i>
                         </td>
                     </tr>
 

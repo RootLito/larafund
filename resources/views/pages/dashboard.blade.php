@@ -57,7 +57,7 @@
                         </div>
 
                         <div class="w-14 h-14 bg-blue-100 rounded-full grid place-items-center">
-                            <i class="fa-regular fa-handshake text-2xl text-blue-400"></i>
+                            <i class="fa-regular fa-square-caret-down text-2xl text-blue-400"></i>
                         </div>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                         </div>
 
                         <div class="w-14 h-14 bg-red-100 rounded-full grid place-items-center">
-                            <i class="fa-regular fa-handshake text-2xl text-red-400"></i>
+                            <i class="fa-regular fa-circle-dot text-2xl text-red-400"></i>
                         </div>
                     </div>
                 </div>

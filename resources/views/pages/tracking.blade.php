@@ -7,7 +7,7 @@
 
         <div class="md:w-full h-full bg-white p-6 rounded-lg" x-data="{ lots: [] }">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold text-gray-700 mb-4">Add new PR</h2>
+                <h2 class="text-xl font-bold text-gray-700 mb-4">New PR</h2>
                 <button x-on:click="lots.push({});"
                     class="bg-blue-800 text-white p-2 text-xs cursor-pointer rounded w-28">Add Lot</button>
             </div>
