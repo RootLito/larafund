@@ -9,6 +9,7 @@
     <link rel="shortcut icon" href="{{ asset('images/bfar.png') }}" type="image/x-icon">
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.17/index.global.min.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+    {{-- <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script> --}}
     <title>BAC</title>
     @vite('resources/css/app.css')
 </head>

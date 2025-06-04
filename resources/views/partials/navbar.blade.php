@@ -3,7 +3,7 @@
         <img src="{{ asset('images/bfar.png') }}" alt="" width="18" height="36" class="lg:hidden">
         <h2 class="text-lg font-bold text-gray-700">BAC PR TRACKING SYSTEM</h2>
     </div>
-    <img src="{{ asset('images/bfar.png') }}" alt="" width="48">
+    <img src="{{ asset('images/bfar.png') }}" alt=""  width="48">
 
     
 </div>

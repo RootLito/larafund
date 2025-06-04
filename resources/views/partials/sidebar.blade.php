@@ -39,6 +39,32 @@
 
 
     <form action="/logout" method="post" class="mt-auto">
+        <div x-data="clock()" x-init="start()" id="clock" x-text="time" class="text-sm text-senter mb-5"></div>
+
+        <script>
+            function clock() {
+                return {
+                    time: '',
+                    start() {
+                        this.update();
+                        setInterval(() => this.update(), 1000);
+                    },
+                    update() {
+                        const now = new Date();
+                        this.time = now.toLocaleString('en-US', {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            hour12: true
+                        });
+                    }
+                }
+            }
+        </script>
         <button class="bg-red-400 text-white font-bold text-sm rounded-md w-full h-10 cursor-pointer">Logout</button>
     </form>
 </div>

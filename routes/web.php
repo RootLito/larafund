@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\TrackingController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,19 +23,14 @@ Route::get('/app', function () {
 });
 
 
+Route::get('/dashboard', [TrackingController::class, 'dashboard'])->name('dashboard');
+Route::get('/tracking', [TrackingController::class, 'records'])->name('tracking');
 
-//PAGES DIRI
-Route::get('/dashboard', function () {
-    return view('pages.dashboard');
-})->name('dashboard');
-
-Route::get('/tracking', function () {
-    return view('pages.tracking');
-})->name('tracking');
 
 Route::get('/users', function () {
     return view('pages.users');
 })->name('users');
+
 
 Route::get('/calendar', function () {
     return view('pages.calendar');
@@ -44,7 +40,19 @@ Route::get('/calendar', function () {
 
 
 
-//CONTROLLER ROUTES     
+//USER CONTROLLER     
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout']);
+
+
+
+
+//TRACKING CONTROLLER
+Route::post('/pr', [TrackingController::class, 'newpr']);
+Route::put('/tracking/{id}', [TrackingController::class, 'update'])->name('tracking.update');
+Route::delete('/tracking/delete/{id}', [TrackingController::class, 'delete'])->name('tracking.delete');
+
+
+
+

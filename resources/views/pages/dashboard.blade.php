@@ -10,8 +10,7 @@
                     <h2 class="font-semibold text-gray-600 text-lg">Purchase Request</h2>
                     <div class="flex-1 flex justify-between items-end">
                         <div class="flex flex-col">
-                            <h2 class="text-5xl font-bold text-amber-400">32</h2>
-                            {{-- <p class="text-sm font-bold text-gray-600">Total as of </p> --}}
+                            <h2 class="text-5xl font-bold text-amber-400">{{ $totalCount }}</h2>
                         </div>
 
                         <div class="w-14 h-14 bg-amber-100 rounded-full grid place-items-center">
@@ -24,7 +23,6 @@
                     <div class="flex-1 flex justify-between items-end   ">
                         <div class="flex flex-col">
                             <h2 class="text-5xl font-bold text-green-400">5</h2>
-                            {{-- <p class="text-sm font-bold text-gray-600">Total as of</p> --}}
                         </div>
 
                         <div class="w-14 h-14 bg-green-100 rounded-full grid place-items-center">
@@ -37,7 +35,6 @@
                     <div class="flex-1 flex justify-between items-end   ">
                         <div class="flex flex-col">
                             <h2 class="text-5xl font-bold text-indigo-400">12</h2>
-                            {{-- <p class="text-sm font-bold text-gray-600">Total as of</p> --}}
                         </div>
 
                         <div class="w-14 h-14 bg-indigo-100 rounded-full grid place-items-center">
@@ -53,7 +50,6 @@
                     <div class="flex-1 flex justify-between items-end   ">
                         <div class="flex flex-col">
                             <h2 class="text-5xl font-bold text-blue-400">24</h2>
-                            {{-- <p class="text-sm font-bold text-gray-600">Total as of</p> --}}
                         </div>
 
                         <div class="w-14 h-14 bg-blue-100 rounded-full grid place-items-center">
@@ -66,7 +62,6 @@
                     <div class="flex-1 flex justify-between items-end   ">
                         <div class="flex flex-col">
                             <h2 class="text-5xl font-bold text-red-400">8</h2>
-                            {{-- <p class="text-sm font-bold text-gray-600">Total as of</p> --}}
                         </div>
 
                         <div class="w-14 h-14 bg-red-100 rounded-full grid place-items-center">
@@ -74,41 +69,130 @@
                         </div>
                     </div>
                 </div>
-                <div class="flex-1 bg-white p-4 rounded-xl h-36"></div>
+                <div class="flex flex-col flex-1 bg-white p-4 rounded-xl h-36">
+                    <h2 class="font-semibold text-gray-600 text-lg">Others</h2>
+                    <div class="flex-1 flex justify-between items-end">
+                        <div class="flex flex-col">
+                            <h2 class="text-5xl font-bold text-gray-500">5</h2>
+                        </div>
+
+                        <div class="w-14 h-14 bg-gray-300 rounded-full grid place-items-center">
+                            <i class="fa-solid fa-bars text-2xl text-gray-500"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="flex flex-col h-100 w-full bg-white rounded-xl p-6">
-                <h2 class="font-semibold text-gray-600 text-lg">PR Breakdown</h2>
-                {{-- <hr class="mt-4 border-1 border-gray-100" /> --}}
-
-
-                <div class="flex flex-1 items-center justify-center gap-10">
-                    <div class="w-60 h-full grid place-items-center">
-                        <canvas id="prChart"></canvas>
-                    </div>
-
-                    <div class="flex flex-col gap-6 font-semibold text-gray-500">
-                        <div class="flex items-center space-x-2 bg-gray-100 p-5 rounded-md">
-                            <div class="w-6 h-6 bg-blue-500 rounded-md"></div>
-                            <span>PR Above Php 50k</span>
-                        </div>
-                        <div class="flex items-center space-x-2 bg-gray-100 p-5 rounded-md">
-                            <div class="w-6 h-6 bg-green-500 rounded-md"></div>
-                            <span>PR Below Php 50k</span>
-                        </div>
-                    </div>
+            <div class="flex flex-col w-full bg-white rounded-xl p-6">
+                <h2 class="font-semibold text-gray-600 text-lg mb-6">Project Status Distribution</h2>
+                <div class="w-full p-5">
+                    <canvas id="projectStatusChart"></canvas>
                 </div>
             </div>
         </div>
 
 
-        <div class="w-96 -full bg-white p-5 rounded-xl">
-            <h2 class="font-semibold text-gray-500 text-lg">Note</h2>
+        <div class="flex flex-col w-96 bg-white p-5 rounded-xl">
+            <h2 class="font-semibold text-gray-500 text-lg">PR Breakdown</h2>
+
+            <div class="flex flex-col flex-1 items-center justify-center gap-10 mt-10">
+                <div class="w-60 h-full grid place-items-center">
+                    <canvas id="prChart"></canvas>
+                </div>
+
+                <div class="w-full flex flex-col gap-2 text-gray-600">
+                    <div class="flex items-center space-x-2 bg-gray-100 p-5 rounded-md">
+                        <div class="w-5 h-5 bg-blue-500 rounded-md"></div>
+                        <span>PR Above Php 50k</span>
+                        <h2 class="ml-auto text-2xl font-black">32</h2>
+                    </div>
+                    <div class="flex items-center space-x-2 bg-gray-100 p-5 rounded-md">
+                        <div class="w-5 h-5 bg-green-500 rounded-md"></div>
+                        <span>PR Below Php 50k</span>
+                        <h2 class="ml-auto text-2xl font-black">12</h2>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="font-semibold text-gray-500 text-lg mt-10 mb-4">Total Awarded Amount</h2>
+            <div class="flex-1 flex flex-col items-center justify-center bg-gray-100 p-5 rounded-md">
+                <span class="flex-1 grid place-items-center"><h2 class="text-3xl font-black text-gray-600">₱12,230,705,540.00</h2></span>
+                <button class="w-full bg-red-400 py-2 text-white text-sm cursor-pointer rounded">View Offices Amount</button>
+            </div>
+
 
         </div>
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('projectStatusChart').getContext('2d');
+            const projectStatusChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Pending', 'Completed', 'In Progress', 'Reimbursement', 'Cancelled', ],
+                    datasets: [{
+                        label: 'Number of Projects',
+                        data: [15, 25, 10, 5, 3, ],
+                        backgroundColor: [
+                            '#F59E0B',
+                            '#10B981',
+                            '#3B82F6',
+                            '#9333EA',
+                            '#EF4444',
+                        ],
+
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: false,
+                            },
+
+                            border: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+
+                        },
+                        x: {
+                            title: {
+                                display: false,
+                            },
+                            grid: {
+                                display: false
+                            },
+                            border: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: false,
+                        }
+                    }
+                }
+            });
+        });
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('prChart').getContext('2d');
 

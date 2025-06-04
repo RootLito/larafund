@@ -4,32 +4,58 @@
 
 @section('content')
     <div class="w-full h-full flex flex-col gap-10 p-10">
+        @if (session('success'))
+            <div x-data="{ show: true }" x-show="show"
+                class="text-sm bg-green-200 border border-green-500 text-green-700 p-4 rounded-lg relative">
+                <button @click="show = false"
+                    class="text-2xl cursor-pointer absolute top-2 right-4 text-green-700 hover:text-green-900">
+                    &times;
+                </button>
+                {{ session('success') }}
+            </div>
+        @endif
 
-        <div class="md:w-full h-full bg-white p-6 rounded-lg" x-data="{ lots: [] }">
+        @if ($errors->any())
+            <div x-data="{ show: true }" x-show="show"
+                class="text-sm p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg relative">
+                <button @click="show = false"
+                    class="text-2xl cursor-pointer absolute top-2 right-4 text-red-700 hover:text-red-900">
+                    &times;
+                </button>
+                <ul class="list-disc pl-5 space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <div class="md:w-full h-full bg-white p-6 rounded-lg" x-data="{ lots: [1] }">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-bold text-gray-700 mb-4">New PR</h2>
                 <button x-on:click="lots.push({});"
-                    class="bg-blue-800 text-white p-2 text-xs cursor-pointer rounded w-28">Add Lot</button>
+                    class="bg-blue-400 text-white p-2 text-xs cursor-pointer rounded w-28">Add
+                    Lot</button>
             </div>
 
-            <form action="" method="post">
+            <form action="/pr" method="post">
                 @csrf
-
-                <small>Procurement Projects <span class="text-red-500">*</span></small>
-                <textarea type="text" name="name"
+                <small>Procurement Project <span class="text-red-500">*</span></small>
+                <textarea type="text" name="procurement_project"
                     class="w-full h-20 p-2 border bg-gray-50 border-gray-300 rounded resize-none text-sm"></textarea>
 
-                <div class="flex gap-2 items-end mt-3">
+
+
+
+
+                {{-- ADD MORE FIELD  --}}
+                <div class="flex gap-2 items-end mt-1">
                     <div class="flex flex-col flex-1">
                         <small>Lot and Description <span class="text-red-500">*</span></small>
-                        <input type="text" name=""
-                            class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded">
                     </div>
 
                     <div class="flex flex-col w-72">
                         <small>ABC per LOT <span class="text-red-500">*</span></small>
-                        <input type="text" name=""
-                            class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded">
                     </div>
 
                 </div>
@@ -38,13 +64,13 @@
                         <div class="flex flex-col flex-1">
                             <input type="text" name="lot_description[]"
                                 class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
-                                :id="'lot_description_' + index"> <!-- Use template literals here -->
+                                :id="'lot_description_' + index">
                         </div>
 
                         <div class="flex flex-col w-72">
                             <input type="text" name="abc_per_lot[]"
                                 class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
-                                :id="'abc_per_lot_' + index"> <!-- Use template literals here -->
+                                :id="'abc_per_lot_' + index">
                         </div>
 
                     </div>
@@ -53,7 +79,7 @@
                 <div class="flex gap-2 items-end mt-3">
                     <div class="flex flex-col flex-1">
                         <small>End User <span class="text-red-500">*</span></small>
-                        <input type="text" name="email"
+                        <input type="text" name="end_user"
                             class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded">
                     </div>
                     <div class="flex flex-col w-72">
@@ -70,13 +96,22 @@
 
 
         <div class="md:w-full h-full bg-white p-6 rounded-lg">
-            <h2 class="text-xl font-bold text-gray-700 mb-4">PR Lists</h2>
+            <h2 class="text-xl font-bold text-gray-700 mb-6">PR Lists</h2>
 
+            <div class="w-full flex  mb-4 justify-between">
+                <input type="search" name="" id=""
+                    class="w-100 bg-gray-50 border border-gray-300 p-2 text-sm rounded">
+                <div class="flex gap-2">
+                    <button class="text-sm w-32 bg-gray-400 text-white rounded cursor-pointer">Status</button>
+                    <button class="text-sm w-32 bg-gray-400 text-white rounded cursor-pointer">Mode</button>
+                    <button class="text-sm w-32 bg-gray-400 text-white rounded cursor-pointer">End User</button>
+                </div>
+            </div>
 
-            <table class="w-full table-auto border-collapse border border-gray-300">
+            <table class="w-full table-auto border-collapse border border-gray-300 rounded-lg overflow-hidden">
                 <thead class="border-b border-gray-300">
                     <tr class="bg-gray-100 text-gray-600">
-                        <th class="px-4 py-2 text-left text-sm">Status</th>
+                        <th class="px-4 py-4 text-left text-sm">Status</th>
                         <th class="px-4 py-2 text-left text-sm">PR Number</th>
                         <th class="px-4 py-2 text-left text-sm">Procurement Project</th>
                         <th class="px-4 py-2 text-left text-sm">Total ABC</th>
@@ -86,55 +121,498 @@
                 </thead>
 
                 <tbody>
-                    <tr class="border-b border-gray-300">
-                        <td class="px-4 py-2 text-sm text-gray-600">Pending</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">PR12345</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">Office Supplies</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">₱1,500,000.00</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">Admin Department</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">
-                            <button class="px-4 py-2 text-white bg-blue-500 rounded-md">View</button>
-                        </td>
-                    </tr>
+                    @foreach ($projects as $project)
+                        <tr class="border-b border-gray-300">
+                            <td class="px-4 py-2 text-sm text-gray-600">
+                                <span
+                                    class="text-sm px-4 py-1 rounded-full text-white 
+                                        {{ $project->status == 'Pending'
+                                            ? 'bg-yellow-500'
+                                            : ($project->status == 'Completed'
+                                                ? 'bg-green-500'
+                                                : ($project->status == 'In Progress'
+                                                    ? 'bg-blue-500'
+                                                    : ($project->status == 'Reimbursement'
+                                                        ? 'bg-purple-500'
+                                                        : ($project->status == 'Cancelled'
+                                                            ? 'bg-red-500'
+                                                            : 'bg-gray-500')))) }}">
+                                    {{ $project->status }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-2 text-sm text-gray-600">
+                                {{ $project->pr_number ? $project->pr_number : 'N/A' }}
+                            </td>
+                            <td class="px-4 py-2 text-sm text-gray-600">{{ $project->procurement_project }}</td>
+                            <td class="px-4 py-2 text-sm text-gray-600">₱{{ number_format($project->total_abc, 2) }}</td>
+                            <td class="px-4 py-2 text-sm text-gray-600">{{ $project->end_user }}</td>
+                            <td class="px-4 py-2 text-sm text-gray-600 w-auto whitespace-nowrap">
+                                <div class="flex gap-2">
+                                    <a href="{{ url()->current() }}?selected_id={{ $project->id }}"
+                                        class="px-4 py-2 text-white bg-blue-400 rounded-md cursor-pointer">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </a>
 
-                    <!-- Second Row of Dummy Data -->
-                    <tr class="border-b border-gray-300">
-                        <td class="px-4 py-2 text-sm text-gray-600">Completed</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">PR98765</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">IT Equipment</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">₱750,000.00</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">IT Department</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">
-                            <button class="px-4 py-2 text-white bg-green-500 rounded-md">View</button>
-                        </td>
-                    </tr>
+                                    <a href="{{ url()->current() }}?edit_id={{ $project->id }}"
+                                        class="px-4 py-2 text-white bg-green-400 rounded-md cursor-pointer">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
 
-                    <!-- Third Row of Dummy Data -->
-                    <tr class="border-b border-gray-300">
-                        <td class="px-4 py-2 text-sm text-gray-600">Approved</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">PR11223</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">Furniture</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">₱350,000.00</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">HR Department</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">
-                            <button class="px-4 py-2 text-white bg-yellow-500 rounded-md">View</button>
-                        </td>
-                    </tr>
-
-                    <!-- Fourth Row of Dummy Data -->
-                    <tr class="border-b border-gray-300">
-                        <td class="px-4 py-2 text-sm text-gray-600">In Progress</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">PR54321</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">Security Systems</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">₱2,000,000.00</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">Security Department</td>
-                        <td class="px-4 py-2 text-sm text-gray-600">
-                            <button class="px-4 py-2 text-white bg-red-500 rounded-md">View</button>
-                        </td>
-                    </tr>
-
+                                    <form action="{{ route('tracking.delete', $project->id) }}" method="POST"
+                                        class="inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                            class="px-4 py-2 text-white bg-red-400 rounded-md cursor-pointer">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
+
+            <div class="flex gap-1 mt-1">
+                <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer"><</button>
+                <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">1</button>
+                <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">2</button>
+                <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">3</button>
+                <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">></button>
+
+            </div>
         </div>
     </div>
+
+
+    @if ($selectedProject)
+        <div style="background-color: rgba(0,0,0,0.6)"
+            class="custom-view-modal fixed inset-0 z-50 flex items-center justify-center">
+            <div class="custom-view-container bg-white  p-6 w-7xl overflow-y-auto max-h-[90vh]">
+                <header class="custom-view-header">
+                    <h2 class="custom-view-title mb-8 text-2xl font-semibold text-gray-600">PR Details</h2>
+                </header>
+
+                <main class="custom-view-content overflow-auto">
+                    <div class="h-full">
+                        <form action="">
+                            <table
+                                class="w-full table-auto border-collapse border border-gray-300 rounded-lg overflow-hidden">
+                                <thead class="border-b border-gray-300">
+                                    <tr class="bg-gray-100 text-gray-600">
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">Status</th>
+                                        <th class="px-4 py-2 text-left text-sm whitespace-nowrap">Procurement Project</th>
+                                        <th class="px-4 py-2 text-left text-sm whitespace-nowrap">Lot and Description</th>
+                                        <th class="px-4 py-2 text-left text-sm whitespace-nowrap">ABC per Lot</th>
+                                        <th class="px-4 py-2 text-left text-sm whitespace-nowrap">Total ABC</th>
+                                        <th class="px-4 py-2 text-left text-sm whitespace-nowrap">End User</th>
+                                        <th class="px-4 py-2 text-left text-sm whitespace-nowrap">PR Number</th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">Approved APP</th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">Date Received from
+                                            Planning</th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">Date Received by the TWG
+                                        </th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">TWG</th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">Date Forwarded to Budget
+                                        </th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">Approved PR Received</th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">PhilGEPS Posting Date
+                                        </th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">RFQ/ITB Number</th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">Bid Opening</th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">SQ Number</th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">BAC Res. Number</th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">Date of BAC Res.
+                                            Completely Signed</th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">NOA No.</th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">Canvasser</th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">Name of Supplier</th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">Contract Price</th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">Date Forwarded to GSS
+                                        </th>
+                                        <th class="px-4 py-4 text-left text-sm whitespace-nowrap">Remarks</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            <span
+                                                class="text-sm px-4 py-1 rounded-full text-white
+                                                {{ $project->status == 'Pending'
+                                                    ? 'bg-yellow-500'
+                                                    : ($project->status == 'Completed'
+                                                        ? 'bg-green-500'
+                                                        : ($project->status == 'In Progress'
+                                                            ? 'bg-blue-500'
+                                                            : ($project->status == 'Reimbursement'
+                                                                ? 'bg-purple-500'
+                                                                : ($project->status == 'Cancelled'
+                                                                    ? 'bg-red-500'
+                                                                    : 'bg-gray-500')))) }}">
+                                                {{ $project->status }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            {{ $selectedProject->procurement_project ?? 'N/A' }}</td>
+                                        @php
+                                            $lotDescriptions = json_decode(
+                                                $selectedProject->lot_description ?? '[]',
+                                                true,
+                                            );
+                                            $abcPerLots = json_decode($selectedProject->abc_per_lot ?? '[]', true);
+                                        @endphp
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            @forelse ($lotDescriptions as $desc)
+                                                <div class="py-1">{{ $desc }}</div>
+                                            @empty
+                                                N/A
+                                            @endforelse
+                                        </td>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            @forelse ($abcPerLots as $abc)
+                                                <div class="py-1">₱{{ number_format($abc, 2) }}</div>
+                                            @empty
+                                                N/A
+                                            @endforelse
+                                        </td>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            ₱{{ number_format($selectedProject->total_abc ?? 0, 2) }}</td>
+                                        <td class="px-4 py-4 text-left text-sm">{{ $selectedProject->end_user ?? 'N/A' }}
+                                        </td>
+                                        <td class="px-4 py-4 text-left text-sm">{{ $selectedProject->pr_number ?? 'N/A' }}
+                                        </td>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            {{ $selectedProject->approved_app ?? 'N/A' }}</td>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            {{ $selectedProject->date_received_from_planning ?? 'N/A' }}</td>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            {{ $selectedProject->date_received_by_twg ?? 'N/A' }}</td>
+                                        <td class="px-4 py-4 text-left text-sm">{{ $selectedProject->twg ?? 'N/A' }}</td>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            {{ $selectedProject->date_forwarded_to_budget ?? 'N/A' }}</td>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            {{ $selectedProject->approved_pr_received ?? 'N/A' }}</td>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            {{ $selectedProject->philgeps_posting_date ?? 'N/A' }}</td>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            {{ $selectedProject->rfq_itb_number ?? 'N/A' }}</td>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            {{ $selectedProject->bid_opening ?? 'N/A' }}</td>
+                                        <td class="px-4 py-4 text-left text-sm">{{ $selectedProject->sq_number ?? 'N/A' }}
+                                        </td>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            {{ $selectedProject->bac_res_number ?? 'N/A' }}</td>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            {{ $selectedProject->date_of_bac_res_completely_signed ?? 'N/A' }}</td>
+                                        <td class="px-4 py-4 text-left text-sm">{{ $selectedProject->noa_no ?? 'N/A' }}
+                                        </td>
+                                        <td class="px-4 py-4 text-left text-sm">{{ $selectedProject->canvasser ?? 'N/A' }}
+                                        </td>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            {{ $selectedProject->name_of_supplier ?? 'N/A' }}</td>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            ₱{{ number_format($selectedProject->contract_price ?? 0, 2) }}</td>
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            {{ $selectedProject->date_forwarded_to_gss ?? 'N/A' }}</td>
+                                        <td class="px-4 py-4 text-left text-sm">{{ $selectedProject->remarks ?? 'N/A' }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                </main>
+
+                <footer class="custom-view-footer mb-3 mt-10 text-center">
+                    <a href="{{ route('tracking') }}" class="bg-red-400 text-white px-4 py-2 rounded">Close</a>
+                </footer>
+            </div>
+        </div>
+    @endif
+
+
+    {{-- EDIT  --}}
+    @if ($editProject)
+        <div style="background-color: rgba(0,0,0,0.6)"
+            class="custom-view-modal fixed inset-0 z-50 flex items-center justify-center" id="editModal">
+            <div class="custom-view-container bg-white p-6 w-7xl overflow-y-auto max-h-[90vh]">
+                <header class="custom-view-header">
+                    <h2 class="custom-view-title mb-8 text-2xl font-semibold text-gray-600">Edit PR</h2>
+                </header>
+                <main class="modal__content" id="edit-content">
+                    <form action="{{ route('tracking.update', ['id' => $project->id]) }}" method="post">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="flex gap-2 items-end mb-3">
+
+                            <div class="flex flex-col flex-1">
+                                <small>Status <span class="text-red-500">*</span></small>
+                                <select name="status" id="status"
+                                    class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded">
+                                    <option value="Pending" {{ $editProject->status == 'Pending' ? 'selected' : '' }}>
+                                        Pending
+                                    </option>
+                                    <option value="Completed" {{ $editProject->status == 'Completed' ? 'selected' : '' }}>
+                                        Completed
+                                    </option>
+                                    <option value="In Progress"
+                                        {{ $editProject->status == 'In Progress' ? 'selected' : '' }}>
+                                        In Progress
+                                    </option>
+                                    <option value="Reimbursement"
+                                        {{ $editProject->status == 'Reimbursement' ? 'selected' : '' }}>
+                                        Reimbursement
+                                    </option>
+                                    <option value="Cancelled" {{ $editProject->status == 'Cancelled' ? 'selected' : '' }}>
+                                        Cancelled
+                                    </option>
+                                </select>
+
+                            </div>
+
+                            <div class="flex flex-col w-72">
+                                <small>PR Number <span class="text-red-500">*</span></small>
+                                <input type="text" name="pr_number"
+                                    class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                    value="{{ old('pr_number', $editProject->pr_number) }}">
+                            </div>
+                        </div>
+
+
+
+                        <small>Procurement Project <span class="text-red-500">*</span></small>
+                        <textarea type="text" name="procurement_project"
+                            class="w-full h-20 p-2 border bg-gray-50 border-gray-300 rounded resize-none text-sm">{{ $editProject->procurement_project }}
+                            </textarea>
+
+
+
+
+                        @php
+                            $lotDescriptions = json_decode($editProject->lot_description, true);
+                            $abcPerLots = json_decode($editProject->abc_per_lot, true);
+                        @endphp
+
+                        <div class="flex flex-col gap-1  overflow-x-auto">
+                            <table class="w-full mt-2">
+                                <tr>
+                                    <td class="whitespace-nowrap">
+                                        <small>Lot and Description <span class="text-red-500">*</span></small>
+                                    </td>
+                                    <td class="whitespace-nowrap">
+                                        <small>ABC per LOT <span class="text-red-500">*</span></small>
+                                    </td>
+                                    <td class="whitespace-nowrap">
+                                        <small>PhilGEPS Posting Date <span class="text-red-500">*</span></small>
+                                    </td>
+                                    <td class="whitespace-nowrap">
+                                        <small>RFQ/ITB Number <span class="text-red-500">*</span></small>
+                                    </td>
+                                    <td class="whitespace-nowrap">
+                                        <small>Bid Opening <span class="text-red-500">*</span></small>
+                                    </td>
+                                    <td class="whitespace-nowrap">
+                                        <small>SQ Number <span class="text-red-500">*</span></small>
+                                    </td>
+                                    <td class="whitespace-nowrap">
+                                        <small>BAC Res. Number <span class="text-red-500">*</span></small>
+                                    </td>
+                                    <td class="whitespace-nowrap">
+                                        <small>Date of BAC Res. Completely Signed <span
+                                                class="text-red-500">*</span></small>
+                                    </td>
+                                    <td class="whitespace-nowrap">
+                                        <small>NOA No. <span class="text-red-500">*</span></small>
+                                    </td>
+                                    <td class="whitespace-nowrap">
+                                        <small>Canvasser <span class="text-red-500">*</span></small>
+                                    </td>
+                                    <td class="whitespace-nowrap">
+                                        <small>Name of Supplier <span class="text-red-500">*</span></small>
+                                    </td>
+                                    <td class="whitespace-nowrap">
+                                        <small>Contract Price <span class="text-red-500">*</span></small>
+                                    </td>
+                                    <td class="whitespace-nowrap">
+                                        <small>Date Forwarded to GSS <span class="text-red-500">*</span></small>
+                                    </td>
+                                    <td class="whitespace-nowrap">
+                                        <small>Remarks <span class="text-red-500">*</span></small>
+                                    </td>
+                                </tr>
+                                @if (is_array($lotDescriptions) && is_array($abcPerLots))
+                                    @foreach ($lotDescriptions as $index => $lotDescription)
+                                        <tr>
+                                            <td class="whitespace-nowrap py-1 pr-1">
+                                                <input type="text" name="lot_description[]"
+                                                    class=" bg-gray-50 border border-gray-300 p-2 text-sm rounded w-[500px]"
+                                                    :id="'lot_description_' + {{ $index }}"
+                                                    value="{{ old('lot_description.' . $index, $lotDescription) }}">
+                                            </td>
+
+                                            <td class="whitespace-nowrap pr-1">
+                                                <input type="text" name="abc_per_lot[]"
+                                                    class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                    :id="'abc_per_lot_' + {{ $index }}"
+                                                    value="{{ old('abc_per_lot.' . $index, $abcPerLots[$index] ?? '') }}">
+                                            </td>
+
+                                            <td class="whitespace-nowrap pr-1">
+                                                <input type="date" name="philgeps_posting_date[]"
+                                                    class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                    :id="'philgeps_posting_date_' + {{ $index }}"
+                                                    value="{{ old('philgeps_posting_date.' . $index, $abcPerLots[$index] ?? '') }}">
+                                            </td>
+
+                                            <td class="whitespace-nowrap pr-1">
+                                                <input type="text" name="rfq_itb_number[]"
+                                                    class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                    :id="'rfq_itb_number_' + {{ $index }}">
+                                            </td>
+
+                                            <td class="whitespace-nowrap pr-1">
+                                                <input type="date" name="bid_opening[]"
+                                                    class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                    :id="'bid_opening_' + {{ $index }}">
+                                            </td>
+
+                                            <td class="whitespace-nowrap pr-1">
+                                                <input type="text" name="sq_number[]"
+                                                    class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                    :id="'sq_number_' + {{ $index }}">
+                                            </td>
+
+
+
+                                            <td class="whitespace-nowrap pr-1">
+                                                <input type="text" name="bac_res_number[]"
+                                                    class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                    :id="'bac_res_number_' + {{ $index }}">
+                                            </td>
+
+                                            <td class="whitespace-nowrap pr-1">
+                                                <input type="date" name="date_of_bac_res_completely_signed[]"
+                                                    class="w-[250px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                    :id="'date_of_bac_res_completely_signed_' + {{ $index }}">
+                                            </td>
+
+                                            <td class="whitespace-nowrap pr-1">
+                                                <input type="text" name="noa_number[]"
+                                                    class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                    :id="'noa_number_' + {{ $index }}">
+                                            </td>
+
+                                            <td class="whitespace-nowrap pr-1">
+                                                <input type="text" name="canvasser[]"
+                                                    class="w-[250px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                    :id="'canvasser_' + {{ $index }}">
+                                            </td>
+
+                                            <td class="whitespace-nowrap pr-1">
+                                                <input type="text" name="name_of_supplier[]"
+                                                    class="w-[350px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                    :id="'name_of_supplier_' + {{ $index }}">
+                                            </td>
+
+                                            <td class="whitespace-nowrap pr-1">
+                                                <input type="text" name="contract_price[]"
+                                                    class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                    :id="'contract_price_' + {{ $index }}">
+                                            </td>
+
+                                            <td class="whitespace-nowrap pr-1">
+                                                <input type="text" name="date_forwarded_to_gss[]"
+                                                    class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                    :id="'date_forwarded_to_gss_' + {{ $index }}">
+                                            </td>
+
+                                            <td class="whitespace-nowrap pr-1">
+                                                <input type="text" name="remarks[]"
+                                                    class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                    :id="'remarks' + {{ $index }}">
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <p>Data is not in the expected array format.</p>
+                                @endif
+                            </table>
+                        </div>
+                        <div class="flex gap-2 items-end mt-5">
+                            <div class="flex flex-col flex-1">
+                                <small>End User <span class="text-red-500">*</span></small>
+                                <input type="text" name="end_user"
+                                    class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                    value="{{ $editProject->end_user }}">
+                            </div>
+                            <div class="flex flex-col w-72">
+                                <small>Total ABC <span class="text-red-500">*</span></small>
+                                <input type="text" name="total_abc"
+                                    class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                    value="{{ number_format($editProject->total_abc, 2) }}" disabled>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 items-end mt-3">
+                            <div class="flex flex-col flex-1">
+                                <small>Approved APP <span class="text-red-500">*</span></small>
+                                <select name="status"
+                                    class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded">
+                                    <option value="" selected disabled>- - Select - -</option>
+                                    <option value="Pending">PENDING</option>
+                                    <option value="APP Approved">APP APPROVED</option>
+                                </select>
+                            </div>
+                            <div class="flex flex-col w-72">
+                                <small>Date Received from Planning <span class="text-red-500">*</span></small>
+                                <input type="date" name="total_abc"
+                                    class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded">
+                            </div>
+                        </div>
+                        <div class="flex gap-2 items-end mt-3">
+                            <div class="flex flex-col flex-1">
+                                <small>TWG<span class="text-red-500">*</span></small>
+                                <input type="text" name="total_abc"
+                                    class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded">
+                            </div>
+                            <div class="flex flex-col w-72">
+                                <small>Date Received by the TWG<span class="text-red-500">*</span></small>
+                                <input type="date" name="total_abc"
+                                    class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded">
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 items-end mt-3">
+                            <div class="flex flex-col flex-1">
+                                <small>Approved PR Received<span class="text-red-500">*</span></small>
+                                <input type="text" name="total_abc"
+                                    class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded">
+                            </div>
+
+                            <div class="flex flex-col w-72">
+                                <small>Date Forwarded to Budget<span class="text-red-500">*</span></small>
+                                <input type="date" name="total_abc"
+                                    class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded">
+                            </div>
+                        </div>
+
+                        <hr class="mt-10 mb-8 border-t border-gray-300">
+
+                        <div class="w-full flex gap-2 mt-6 mb-2 justify-center">
+                            <button
+                                class=" bg-green-400 text-white cursor-pointer text-sm rounded py-2 w-1/2">Update</button>
+                            <a href="{{ route('tracking') }}"
+                                class="modal__btn bg-red-400 text-center text-white cursor-pointer text-sm rounded py-2 w-1/2"
+                                data-micromodal-close>Close</a>
+                        </div>
+                    </form>
+                </main>
+
+            </div>
+        </div>
+        </div>
+    @endif
+
 @endsection
