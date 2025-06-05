@@ -76,9 +76,9 @@
                             <h2 class="text-5xl font-bold text-gray-500">5</h2>
                         </div>
 
-                        <div class="w-14 h-14 bg-gray-300 rounded-full grid place-items-center">
+                        <button data-micromodal-trigger="modal-2" class="cursor-pointer w-14 h-14 bg-gray-300 rounded-full">
                             <i class="fa-solid fa-bars text-2xl text-gray-500"></i>
-                        </div>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -116,11 +116,89 @@
 
             <h2 class="font-semibold text-gray-500 text-lg mt-10 mb-4">Total Awarded Amount</h2>
             <div class="flex-1 flex flex-col items-center justify-center bg-gray-100 p-5 rounded-md">
-                <span class="flex-1 grid place-items-center"><h2 class="text-3xl font-black text-gray-600">₱12,230,705,540.00</h2></span>
-                <button class="w-full bg-red-400 py-2 text-white text-sm cursor-pointer rounded">View Offices Amount</button>
+                <span class="flex-1 grid place-items-center">
+                    <h2 class="text-3xl font-black text-gray-600">₱12,230,705,540.00</h2>
+                </span>
+                <button data-micromodal-trigger="modal-1"
+                    class="w-full bg-red-400 py-2 text-white text-sm cursor-pointer rounded">
+                    View Offices Amount
+                </button>
             </div>
 
 
+        </div>
+    </div>
+    <!-- Modal 1: Offices Amount -->
+    <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
+        <div class="modal__overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            tabindex="-1" data-micromodal-close>
+            <div class="modal__container bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative" role="dialog"
+                aria-modal="true" aria-labelledby="modal-1-title">
+                <header class="modal__header flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-600" id="modal-1-title">Offices Amount</h2>
+                </header>
+                <main class="modal__content text-sm">
+                    <table class="w-full table-auto border-collapse rounded-lg overflow-hidden">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-700">
+                                <th class="text-left p-3 border-b border-gray-300">Office</th>
+                                <th class="text-left p-3 border-b border-gray-300 whitespace-nowrap">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="p-3 border-b border-gray-300">Office 1</td>
+                                <td class="p-3 border-b border-gray-300 whitespace-nowrap">$1,200</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-b border-gray-300">Office 2</td>
+                                <td class="p-3 border-b border-gray-300 whitespace-nowrap">$950</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </main>
+                <footer class="modal__footer mt-4 text-right">
+                    <button class="bg-red-400 hover:bg-red-500 text-white text-sm px-4 py-2 rounded cursor-pointer"
+                        data-micromodal-close>Close</button>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Menu Options -->
+    <div class="modal micromodal-slide" id="modal-2" aria-hidden="true">
+        <div class="modal__overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            tabindex="-1" data-micromodal-close>
+            <div class="modal__container bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative" role="dialog"
+                aria-modal="true" aria-labelledby="modal-2-title">
+                <header class="modal__header flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-600" id="modal-2-title">Other Mode of Procurement</h2>
+                </header>
+                <main class="modal__content text-sm">
+                    <table class="w-full table-auto border-collapse rounded-lg overflow-hidden">
+                        <thead>
+                            <tr class="bg-gray-100 text-gray-700">
+                                <th class="text-left p-3 border-b border-gray-300">Mode of Procurement</th>
+                                <th class="text-left p-3 border-b border-gray-300 whitespace-nowrap">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="p-3 border-b border-gray-300">Agency to Agency</td>
+                                <td class="p-3 border-b border-gray-300 whitespace-nowrap">6</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 border-b border-gray-300">Bla bla</td>
+                                <td class="p-3 border-b border-gray-300 whitespace-nowrap">2</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </main>
+                <footer class="modal__footer mt-4 text-right">
+                    <button class="bg-red-400 hover:bg-red-500 text-white text-sm px-4 py-2 rounded  cursor-pointer"
+                        data-micromodal-close>Close</button>
+                </footer>
+            </div>
         </div>
     </div>
 

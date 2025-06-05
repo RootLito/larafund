@@ -8,7 +8,7 @@ Alpine.start();
 
 
 MicroModal.init({
-  disableScroll: true,
+  disableScroll: false,
   awaitOpenAnimation: true, 
   awaitCloseAnimation: false, 
   disableOverlayClose: true,

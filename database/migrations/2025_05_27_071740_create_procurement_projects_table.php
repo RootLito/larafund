@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('status');
             $table->text('procurement_project');
+
             $table->json('lot_description');
             $table->json('abc_per_lot');  
+
             $table->decimal('total_abc', 15, 2);
             $table->string('end_user');
             $table->string('pr_number')->nullable();
@@ -26,18 +28,21 @@ return new class extends Migration
             $table->string('twg')->nullable();
             $table->date('date_forwarded_to_budget')->nullable();
             $table->date('approved_pr_received')->nullable();
-            $table->date('philgeps_posting_date')->nullable();
-            $table->string('rfq_itb_number')->nullable();
-            $table->date('bid_opening')->nullable();
-            $table->string('sq_number')->nullable();
-            $table->string('bac_res_number')->nullable();
-            $table->date('date_of_bac_res_completely_signed')->nullable();
-            $table->string('noa_number')->nullable();
-            $table->string('canvasser')->nullable();
-            $table->string('name_of_supplier')->nullable();
-            $table->decimal('contract_price', 15, 2)->nullable();
-            $table->date('date_forwarded_to_gss')->nullable();
-            $table->text('remarks')->nullable();
+
+
+
+            $table->json('philgeps_posting_date')->nullable();
+            $table->json('rfq_itb_number')->nullable();
+            $table->json('bid_opening')->nullable();
+            $table->json('sq_number')->nullable();
+            $table->json('bac_res_number')->nullable();
+            $table->json('date_of_bac_res_completely_signed')->nullable();
+            $table->json('noa_number')->nullable();
+            $table->json('canvasser')->nullable();
+            $table->json('name_of_supplier')->nullable();
+            $table->json('contract_price', 15, 2)->nullable();
+            $table->json('date_forwarded_to_gss')->nullable();
+            $table->json('remarks')->nullable();
             $table->timestamps();
         });
     }
