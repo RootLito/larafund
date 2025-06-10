@@ -37,7 +37,7 @@ class TrackingController extends Controller
     // VIEW 
     public function records(Request $request)
     {
-        $projects =  ProcurementProject::orderBy('created_at', 'desc')->get();
+        // $projects =  ProcurementProject::orderBy('created_at', 'desc')->get();
 
         $selectedProject = null;
         if ($request->has('selected_id')) {
@@ -49,15 +49,8 @@ class TrackingController extends Controller
             $editProject = ProcurementProject::find($request->edit_id);
         }
 
-        // $project = null;
-        // if ($request->has('edit_id')) {
-        //     $project = ProcurementProject::find($request->edit_id); 
-        // }
-
-
-        // dd($request->edit_id, $editProject);
-
-        return view('pages.tracking', compact('projects', 'selectedProject', 'editProject', ));
+        return view('pages.tracking', compact('selectedProject', 'editProject', ));
+        // return view('pages.tracking', compact('projects', 'selectedProject', 'editProject', ));
     }
 
 
@@ -68,11 +61,7 @@ class TrackingController extends Controller
     // UPDATE
     public function update(Request $request, $id)
     {
-
         $procurementProject = ProcurementProject::findOrFail($id);
-
-
-                // Convert empty strings to null
         $request->merge(array_map(function ($value) {
             return $value === '' ? null : $value;
         }, $request->all()));
@@ -135,10 +124,7 @@ class TrackingController extends Controller
             }
         }
 
-        dd($id);
-
         $procurementProject->update($validated);
-
         return redirect('/tracking')->with('success', 'Procurement project updated successfully!');
     }
 
@@ -162,4 +148,9 @@ class TrackingController extends Controller
         $totalCount = ProcurementProject::count(); 
         return view('pages.dashboard', compact('totalCount'));
     }
+
+
+
+
+    
 }

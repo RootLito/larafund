@@ -105,97 +105,7 @@
                 </button>
             </form>
         </div>
-
-
-
-
-        <div class="md:w-full h-full bg-white p-6 rounded-lg">
-            <h2 class="text-xl font-bold text-gray-700 mb-6">PR Lists</h2>
-
-            <div class="w-full flex  mb-4 justify-between">
-                <input type="search" name="" id=""
-                    class="w-100 bg-gray-50 border border-gray-300 p-2 text-sm rounded">
-                <div class="flex gap-2">
-                    <button class="text-sm w-32 bg-gray-400 text-white rounded cursor-pointer">Status</button>
-                    <button class="text-sm w-32 bg-gray-400 text-white rounded cursor-pointer">Mode</button>
-                    <button class="text-sm w-32 bg-gray-400 text-white rounded cursor-pointer">End User</button>
-                </div>
-            </div>
-
-            <table class="w-full table-auto border-collapse border border-gray-300 rounded-lg overflow-hidden">
-                <thead class="border-b border-gray-300">
-                    <tr class="bg-gray-100 text-gray-600">
-                        <th class="px-4 py-4 text-left text-sm">Status</th>
-                        <th class="px-4 py-2 text-left text-sm">PR Number</th>
-                        <th class="px-4 py-2 text-left text-sm">Procurement Project</th>
-                        <th class="px-4 py-2 text-left text-sm">Total ABC</th>
-                        <th class="px-4 py-2 text-left text-sm">End User</th>
-                        <th class="px-4 py-2 text-left text-sm">Action</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach ($projects as $project)
-                        <tr class="border-b border-gray-300">
-                            <td class="px-4 py-2 text-sm text-gray-600">
-                                <span
-                                    class="text-sm px-4 py-1 rounded-full text-white 
-                                        {{ $project->status == 'Pending'
-                                            ? 'bg-yellow-500'
-                                            : ($project->status == 'Completed'
-                                                ? 'bg-green-500'
-                                                : ($project->status == 'In Progress'
-                                                    ? 'bg-blue-500'
-                                                    : ($project->status == 'Reimbursement'
-                                                        ? 'bg-purple-500'
-                                                        : ($project->status == 'Cancelled'
-                                                            ? 'bg-red-500'
-                                                            : 'bg-gray-500')))) }}">
-                                    {{ $project->status }}
-                                </span>
-                            </td>
-                            <td class="px-4 py-2 text-sm text-gray-600">
-                                {{ $project->pr_number ? $project->pr_number : 'N/A' }}
-                            </td>
-                            <td class="px-4 py-2 text-sm text-gray-600">{{ $project->procurement_project }}</td>
-                            <td class="px-4 py-2 text-sm text-gray-600">₱{{ number_format($project->total_abc, 2) }}</td>
-                            <td class="px-4 py-2 text-sm text-gray-600">{{ $project->end_user }}</td>
-                            <td class="px-4 py-2 text-sm text-gray-600 w-auto whitespace-nowrap">
-                                <div class="flex gap-2 flex-nowrap">
-                                    <a href="{{ url()->current() }}?selected_id={{ $project->id }}"
-                                        class="px-4 py-2 text-white bg-blue-400 rounded-md cursor-pointer">
-                                        <i class="fa-solid fa-eye"></i>
-                                    </a>
-
-                                    <a href="{{ url()->current() }}?edit_id={{ $project->id }}"
-                                        class="px-4 py-2 text-white bg-green-400 rounded-md cursor-pointer">
-                                        <i class="fa-solid fa-pen-to-square"></i>
-                                    </a>
-
-                                    <form action="{{ route('tracking.delete', $project->id) }}" method="POST"
-                                        class="inline-block">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="px-4 py-2 text-white bg-red-400 rounded-md cursor-pointer">
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
-            <div class="flex gap-1 justify-center my-6">
-                <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer"><</button>
-                <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">1</button>
-                <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">2</button>
-                <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">3</button>
-                <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">></button>
-            </div>
-        </div>
+        @livewire('procurement-table')
     </div>
 
 
@@ -250,7 +160,7 @@
 
                                 <tbody>
                                     <tr>
-                                        <td class="px-4 py-4 text-left text-sm">
+                                        <td class="px-4 py-4 text-left text-sm whitespace-nowrap">
                                             <span
                                                 class="text-sm px-4 py-1 rounded-full text-white
                                                 {{ $selectedProject->status == 'Pending'
@@ -468,7 +378,7 @@
                     <h2 class="custom-view-title mb-8 text-2xl font-semibold text-gray-600">Edit PR</h2>
                 </header>
                 <main class="modal__content" id="edit-content">
-                    <form action="{{ route('tracking.update', ['id' => $project->id]) }}" method="post">
+                    <form action="{{ route('tracking.update', ['id' => $editProject->id]) }}" method="post">
                         @csrf
                         @method('PUT')
 
