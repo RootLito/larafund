@@ -30,52 +30,62 @@
             </div>
         @endif
 
-        <div class="md:w-full h-full bg-white p-6 rounded-lg" x-data="{ lots: [1] }">
+        <div class="md:w-full h-full bg-white p-6 rounded-lg" x-data="{
+            lots: [{ description: '', abc: '' }],
+            get totalABC() {
+                return this.lots.reduce((sum, lot) => {
+                    const val = parseFloat(lot.abc);
+                    return sum + (isNaN(val) ? 0 : val);
+                }, 0).toFixed(2);
+            },
+            addLot() {
+                this.lots.push({ description: '', abc: '' });
+            }
+        }">
+
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl font-bold text-gray-700 mb-4">New PR</h2>
-                <button x-on:click="lots.push({});"
-                    class="bg-blue-400 text-white p-2 text-xs cursor-pointer rounded w-28">Add
-                    Lot</button>
+                <button x-on:click.prevent="addLot" class="bg-blue-400 text-white p-2 text-xs cursor-pointer rounded w-28">
+                    Add Lot
+                </button>
             </div>
 
             <form action="/pr" method="post">
                 @csrf
+
+                <!-- Procurement Project -->
                 <small>Procurement Project <span class="text-red-500">*</span></small>
-                <textarea type="text" name="procurement_project"
+                <textarea name="procurement_project"
                     class="w-full h-20 p-2 border bg-gray-50 border-gray-300 rounded resize-none text-sm"></textarea>
 
-
-
-
-
-                {{-- ADD MORE FIELD  --}}
+                <!-- Table Header -->
                 <div class="flex gap-2 items-end mt-1">
                     <div class="flex flex-col flex-1">
                         <small>Lot and Description <span class="text-red-500">*</span></small>
                     </div>
-
                     <div class="flex flex-col w-72">
                         <small>ABC per LOT <span class="text-red-500">*</span></small>
                     </div>
-
                 </div>
+
+                <!-- Dynamic Lots -->
                 <template x-for="(lot, index) in lots" :key="index">
                     <div class="flex gap-2 items-end mt-1">
                         <div class="flex flex-col flex-1">
-                            <input type="text" name="lot_description[]"
+                            <input type="text" :name="'lot_description[]'" x-model="lot.description"
                                 class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
                                 :id="'lot_description_' + index">
                         </div>
 
                         <div class="flex flex-col w-72">
-                            <input type="text" name="abc_per_lot[]"
+                            <input type="number" step="any" :name="'abc_per_lot[]'" x-model="lot.abc"
                                 class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
                                 :id="'abc_per_lot_' + index">
                         </div>
-
                     </div>
                 </template>
 
+                <!-- End User & Total ABC -->
                 <div class="flex gap-2 items-end mt-3">
                     <div class="flex flex-col flex-1">
                         <small>End User <span class="text-red-500">*</span></small>
@@ -84,14 +94,18 @@
                     </div>
                     <div class="flex flex-col w-72">
                         <small>Total ABC <span class="text-red-500">*</span></small>
-                        <input type="text" name="total_abc"
+                        <input type="text" name="total_abc" x-bind:value="totalABC" readonly
                             class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded">
                     </div>
                 </div>
 
-                <button class="w-full bg-red-400 py-2 mt-5 text-white cursor-pointer rounded">Save</button>
+                <!-- Submit Button -->
+                <button class="w-full bg-red-400 py-2 mt-5 text-white cursor-pointer rounded">
+                    Save
+                </button>
             </form>
         </div>
+
 
 
 
@@ -116,7 +130,7 @@
                         <th class="px-4 py-2 text-left text-sm">Procurement Project</th>
                         <th class="px-4 py-2 text-left text-sm">Total ABC</th>
                         <th class="px-4 py-2 text-left text-sm">End User</th>
-                        <th class="px-4 py-2 text-left text-sm">View</th>
+                        <th class="px-4 py-2 text-left text-sm">Action</th>
                     </tr>
                 </thead>
 
@@ -175,12 +189,11 @@
             </table>
 
             <div class="flex gap-1 justify-center my-6">
-                <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">
-                    << /button>
-                        <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">1</button>
-                        <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">2</button>
-                        <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">3</button>
-                        <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">></button>
+                <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer"><</button>
+                <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">1</button>
+                <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">2</button>
+                <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">3</button>
+                <button class="text-sm w-8 h-8 bg-gray-400 text-white rounded cursor-pointer">></button>
             </div>
         </div>
     </div>
@@ -240,29 +253,65 @@
                                         <td class="px-4 py-4 text-left text-sm">
                                             <span
                                                 class="text-sm px-4 py-1 rounded-full text-white
-                                                {{ $project->status == 'Pending'
+                                                {{ $selectedProject->status == 'Pending'
                                                     ? 'bg-yellow-500'
-                                                    : ($project->status == 'Completed'
+                                                    : ($selectedProject->status == 'Completed'
                                                         ? 'bg-green-500'
-                                                        : ($project->status == 'In Progress'
+                                                        : ($selectedProject->status == 'In Progress'
                                                             ? 'bg-blue-500'
-                                                            : ($project->status == 'Reimbursement'
+                                                            : ($selectedProject->status == 'Reimbursement'
                                                                 ? 'bg-purple-500'
-                                                                : ($project->status == 'Cancelled'
+                                                                : ($selectedProject->status == 'Cancelled'
                                                                     ? 'bg-red-500'
                                                                     : 'bg-gray-500')))) }}">
-                                                {{ $project->status }}
+                                                {{ $selectedProject->status }}
                                             </span>
                                         </td>
-                                        <td class="px-4 py-4 text-left text-sm">
-                                            {{ $selectedProject->procurement_project ?? 'N/A' }}</td>
                                         @php
                                             $lotDescriptions = json_decode(
                                                 $selectedProject->lot_description ?? '[]',
                                                 true,
                                             );
                                             $abcPerLots = json_decode($selectedProject->abc_per_lot ?? '[]', true);
+                                            $philgepsPostingDates = json_decode(
+                                                $selectedProject->philgeps_posting_date ?? '[]',
+                                                true,
+                                            );
+                                            $rfqItbNumbers = json_decode(
+                                                $selectedProject->rfq_itb_number ?? '[]',
+                                                true,
+                                            );
+                                            $bidOpenings = json_decode($selectedProject->bid_opening ?? '[]', true);
+                                            $sqNumbers = json_decode($selectedProject->sq_number ?? '[]', true);
+                                            $bacResNumbers = json_decode(
+                                                $selectedProject->bac_res_number ?? '[]',
+                                                true,
+                                            );
+                                            $dateOfBacResCompletelySigned = json_decode(
+                                                $selectedProject->date_of_bac_res_completely_signed ?? '[]',
+                                                true,
+                                            );
+                                            $noaNumbers = json_decode($selectedProject->noa_number ?? '[]', true);
+                                            $canvassers = json_decode($selectedProject->canvasser ?? '[]', true);
+                                            $nameOfSuppliers = json_decode(
+                                                $selectedProject->name_of_supplier ?? '[]',
+                                                true,
+                                            );
+                                            $contractPrices = json_decode(
+                                                $selectedProject->contract_price ?? '[]',
+                                                true,
+                                            );
+                                            $dateForwardedToGss = json_decode(
+                                                $selectedProject->date_forwarded_to_gss ?? '[]',
+                                                true,
+                                            );
+                                            $remarks = json_decode($selectedProject->remarks ?? '[]', true);
                                         @endphp
+
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            {{ $selectedProject->procurement_project ?? 'N/A' }}
+                                        </td>
+
                                         <td class="px-4 py-4 text-left text-sm">
                                             @forelse ($lotDescriptions as $desc)
                                                 <div class="py-1">{{ $desc }}</div>
@@ -270,6 +319,7 @@
                                                 N/A
                                             @endforelse
                                         </td>
+
                                         <td class="px-4 py-4 text-left text-sm">
                                             @forelse ($abcPerLots as $abc)
                                                 <div class="py-1">₱{{ number_format($abc, 2) }}</div>
@@ -277,8 +327,11 @@
                                                 N/A
                                             @endforelse
                                         </td>
+
                                         <td class="px-4 py-4 text-left text-sm">
-                                            ₱{{ number_format($selectedProject->total_abc ?? 0, 2) }}</td>
+                                            ₱{{ number_format($selectedProject->total_abc ?? 0, 2) }}
+                                        </td>
+
                                         <td class="px-4 py-4 text-left text-sm">{{ $selectedProject->end_user ?? 'N/A' }}
                                         </td>
                                         <td class="px-4 py-4 text-left text-sm">{{ $selectedProject->pr_number ?? 'N/A' }}
@@ -294,30 +347,103 @@
                                             {{ $selectedProject->date_forwarded_to_budget ?? 'N/A' }}</td>
                                         <td class="px-4 py-4 text-left text-sm">
                                             {{ $selectedProject->approved_pr_received ?? 'N/A' }}</td>
+
                                         <td class="px-4 py-4 text-left text-sm">
-                                            {{ $selectedProject->philgeps_posting_date ?? 'N/A' }}</td>
-                                        <td class="px-4 py-4 text-left text-sm">
-                                            {{ $selectedProject->rfq_itb_number ?? 'N/A' }}</td>
-                                        <td class="px-4 py-4 text-left text-sm">
-                                            {{ $selectedProject->bid_opening ?? 'N/A' }}</td>
-                                        <td class="px-4 py-4 text-left text-sm">{{ $selectedProject->sq_number ?? 'N/A' }}
+                                            @forelse ($philgepsPostingDates as $date)
+                                                <div class="py-1">{{ $date ?? 'N/A' }}</div>
+                                            @empty
+                                                N/A
+                                            @endforelse
                                         </td>
+
                                         <td class="px-4 py-4 text-left text-sm">
-                                            {{ $selectedProject->bac_res_number ?? 'N/A' }}</td>
-                                        <td class="px-4 py-4 text-left text-sm">
-                                            {{ $selectedProject->date_of_bac_res_completely_signed ?? 'N/A' }}</td>
-                                        <td class="px-4 py-4 text-left text-sm">{{ $selectedProject->noa_no ?? 'N/A' }}
+                                            @forelse ($rfqItbNumbers as $rfq)
+                                                <div class="py-1">{{ $rfq ?? 'N/A' }}</div>
+                                            @empty
+                                                N/A
+                                            @endforelse
                                         </td>
-                                        <td class="px-4 py-4 text-left text-sm">{{ $selectedProject->canvasser ?? 'N/A' }}
+
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            @forelse ($bidOpenings as $bid)
+                                                <div class="py-1">{{ $bid ?? 'N/A' }}</div>
+                                            @empty
+                                                N/A
+                                            @endforelse
                                         </td>
+
                                         <td class="px-4 py-4 text-left text-sm">
-                                            {{ $selectedProject->name_of_supplier ?? 'N/A' }}</td>
-                                        <td class="px-4 py-4 text-left text-sm">
-                                            ₱{{ number_format($selectedProject->contract_price ?? 0, 2) }}</td>
-                                        <td class="px-4 py-4 text-left text-sm">
-                                            {{ $selectedProject->date_forwarded_to_gss ?? 'N/A' }}</td>
-                                        <td class="px-4 py-4 text-left text-sm">{{ $selectedProject->remarks ?? 'N/A' }}
+                                            @forelse ($sqNumbers as $sq)
+                                                <div class="py-1">{{ $sq ?? 'N/A' }}</div>
+                                            @empty
+                                                N/A
+                                            @endforelse
                                         </td>
+
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            @forelse ($bacResNumbers as $bac)
+                                                <div class="py-1">{{ $bac ?? 'N/A' }}</div>
+                                            @empty
+                                                N/A
+                                            @endforelse
+                                        </td>
+
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            @forelse ($dateOfBacResCompletelySigned as $date)
+                                                <div class="py-1">{{ $date ?? 'N/A' }}</div>
+                                            @empty
+                                                N/A
+                                            @endforelse
+                                        </td>
+
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            @forelse ($noaNumbers as $noa)
+                                                <div class="py-1">{{ $noa ?? 'N/A' }}</div>
+                                            @empty
+                                                N/A
+                                            @endforelse
+                                        </td>
+
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            @forelse ($canvassers as $canvasser)
+                                                <div class="py-1">{{ $canvasser ?? 'N/A' }}</div>
+                                            @empty
+                                                N/A
+                                            @endforelse
+                                        </td>
+
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            @forelse ($nameOfSuppliers as $supplier)
+                                                <div class="py-1">{{ $supplier ?? 'N/A' }}</div>
+                                            @empty
+                                                N/A
+                                            @endforelse
+                                        </td>
+
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            @forelse ($contractPrices as $price)
+                                                <div class="py-1">₱{{ number_format($price, 2) }}</div>
+                                            @empty
+                                                N/A
+                                            @endforelse
+                                        </td>
+
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            @forelse ($dateForwardedToGss as $date)
+                                                <div class="py-1">{{ $date ?? 'N/A' }}</div>
+                                            @empty
+                                                N/A
+                                            @endforelse
+                                        </td>
+
+                                        <td class="px-4 py-4 text-left text-sm">
+                                            @forelse ($remarks as $remark)
+                                                <div class="py-1">{{ $remark ?? 'N/A' }}</div>
+                                            @empty
+                                                N/A
+                                            @endforelse
+                                        </td>
+
                                     </tr>
                                 </tbody>
                             </table>
@@ -380,21 +506,30 @@
                                     value="{{ old('pr_number', $editProject->pr_number) }}">
                             </div>
                         </div>
-
-
-
                         <small>Procurement Project <span class="text-red-500">*</span></small>
                         <textarea type="text" name="procurement_project"
                             class="w-full h-20 p-2 border bg-gray-50 border-gray-300 rounded resize-none text-sm">{{ $editProject->procurement_project }}
-                            </textarea>
-
-
-
-
+                        </textarea>
                         @php
                             $lotDescriptions = json_decode($editProject->lot_description, true);
                             $abcPerLots = json_decode($editProject->abc_per_lot, true);
+                            $philgeps_posting_date = json_decode($editProject->philgeps_posting_date, true);
+                            $rfq_itb_number = json_decode($editProject->rfq_itb_number, true);
+                            $bid_opening = json_decode($editProject->bid_opening, true);
+                            $sq_number = json_decode($editProject->sq_number, true);
+                            $bac_res_number = json_decode($editProject->bac_res_number, true);
+                            $date_of_bac_res_completely_signed = json_decode(
+                                $editProject->date_of_bac_res_completely_signed,
+                                true,
+                            );
+                            $noa_number = json_decode($editProject->noa_number, true);
+                            $canvasser = json_decode($editProject->canvasser, true);
+                            $name_of_supplier = json_decode($editProject->name_of_supplier, true);
+                            $contract_price = json_decode($editProject->contract_price, true);
+                            $date_forwarded_to_gss = json_decode($editProject->date_forwarded_to_gss, true);
+                            $remarks = json_decode($editProject->remarks, true);
                         @endphp
+
 
                         <div class="flex flex-col gap-1  overflow-x-auto">
                             <table class="w-full mt-2">
@@ -562,7 +697,7 @@
                                 <small>Total ABC <span class="text-red-500">*</span></small>
                                 <input type="text" name="total_abc"
                                     class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
-                                    value="{{ old('total_abc', $editProject->total_abc ?? '') }}">
+                                    value="{{ old('total_abc', $editProject->total_abc ?? '') }}" disabled>
                             </div>
                         </div>
 
@@ -625,7 +760,7 @@
                         </div>
 
 
-                        <hr class="mt-10 mb-8 border-t border-gray-300">
+                        {{-- <hr class="mt-10 mb-8 border-t border-gray-300"> --}}
 
                         <div class="w-full flex gap-2 mt-6 mb-2 justify-center">
                             <button
