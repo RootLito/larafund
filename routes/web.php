@@ -54,5 +54,10 @@ Route::put('/tracking/{id}', [TrackingController::class, 'update'])->name('track
 Route::delete('/tracking/delete/{id}', [TrackingController::class, 'delete'])->name('tracking.delete');
 
 
+//CALENDAR CONTROLLER
+Route::get('/calendar', [TrackingController::class, 'calendar'])->name('calendar');
+
+
+
 
 

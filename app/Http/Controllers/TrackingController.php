@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use App\Models\ProcurementProject;
 
 class TrackingController extends Controller
@@ -142,15 +143,41 @@ class TrackingController extends Controller
 
 
 
-
+    // DASHBOARD
     public function dashboard()
     {
-        $totalCount = ProcurementProject::count(); 
-        return view('pages.dashboard', compact('totalCount'));
+        $statuses = ['Pending', 'Completed', 'In Progress', 'Reimbursement', 'Cancelled'];
+
+        $statusCounts = [];
+        foreach ($statuses as $status) {
+            $statusCounts[] = ProcurementProject::where('status', $status)->count();
+        }
+
+        $totalCount = array_sum($statusCounts);
+
+        return view('pages.dashboard', [
+            'totalCount' => $totalCount,
+            'statusLabels' => $statuses,
+            'statusData' => $statusCounts,
+        ]);
     }
 
 
+    // CALENDAR
+    public function calendar()
+    {
+        $projects = ProcurementProject::select('id', 'procurement_project', 'created_at')->get();
 
+        $events = $projects->map(function ($project) {
+            return [
+                'title' => $project->procurement_project,
+                'start' => Carbon::parse($project->created_at)->toDateString(),
+                'url'   => url('/project/' . $project->id),
+            ];
+        });
+
+        return view('pages.calendar', compact('events'));
+    }
 
     
 }

@@ -205,13 +205,17 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('projectStatusChart').getContext('2d');
+
+            const statusLabels = @json($statusLabels);
+            const statusData = @json($statusData);
+
             const projectStatusChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Pending', 'Completed', 'In Progress', 'Reimbursement', 'Cancelled', ],
+                    labels: statusLabels,
                     datasets: [{
                         label: 'Number of Projects',
-                        data: [15, 25, 10, 5, 3, ],
+                        data: statusData,
                         backgroundColor: [
                             '#F59E0B',
                             '#10B981',
@@ -240,6 +244,16 @@
                                 font: {
                                     size: 14
                                 }
+                            },
+                            ticks: {
+                                stepSize: 1, 
+                                maxTicksLimit: 5,
+                                font: {
+                                    size: 14
+                                }
+                            },
+                            grid: {
+                                drawBorder: false
                             }
 
                         },
