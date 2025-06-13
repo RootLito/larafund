@@ -27,13 +27,13 @@
                 <option value="Direct Contracting">Direct Contracting</option>
             </select>
 
-            <select wire:model.live="endUserFilter" 
+            {{-- <select wire:model.live="endUserFilter" 
                 class="text-sm w-full md:w-32 bg-gray-50 border border-gray-300 text-gray-700 rounded p-2 focus:ring-blue-500 focus:border-blue-500">
                 <option value="">All End Users</option>
                 <option value="HR Department">HR Department</option>
                 <option value="IT Department">IT Department</option>
                 <option value="Finance Department">Finance Department</option>
-            </select>
+            </select> --}}
         </div>
     </div>
 
@@ -50,6 +50,7 @@
             <tr class="bg-gray-100 text-gray-600">
                 <th class="px-4 py-4 text-left text-sm">Status</th>
                 <th class="px-4 py-2 text-left text-sm">PR Number</th>
+                <th class="px-4 py-2 text-left text-sm">Mode of Procurement</th>
                 <th class="px-4 py-2 text-left text-sm">Procurement Project</th>
                 <th class="px-4 py-2 text-left text-sm">Total ABC</th>
                 <th class="px-4 py-2 text-left text-sm">End User</th>
@@ -75,6 +76,7 @@
                     <td class="px-4 py-2 text-sm text-gray-600">
                         {{ $project->pr_number ? $project->pr_number : 'N/A' }}
                     </td>
+                    <td class="px-4 py-2 text-sm text-gray-600">{{ $project->mode_of_procurement}}</td>
                     <td class="px-4 py-2 text-sm text-gray-600">{{ $project->procurement_project }}</td>
                     <td class="px-4 py-2 text-sm text-gray-600">₱{{ number_format($project->total_abc, 2) }}</td>
                     <td class="px-4 py-2 text-sm text-gray-600">{{ $project->end_user }}</td>

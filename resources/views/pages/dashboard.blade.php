@@ -22,7 +22,7 @@
                     <h2 class="font-semibold text-gray-600 text-lg">Public Bidding</h2>
                     <div class="flex-1 flex justify-between items-end   ">
                         <div class="flex flex-col">
-                            <h2 class="text-5xl font-bold text-green-400">5</h2>
+                            <h2 class="text-5xl font-bold text-green-400">{{ $publicBiddingCount }}</h2>
                         </div>
 
                         <div class="w-14 h-14 bg-green-100 rounded-full grid place-items-center">
@@ -34,7 +34,7 @@
                     <h2 class="font-semibold text-gray-500 text-lg">Direct Contracting</h2>
                     <div class="flex-1 flex justify-between items-end   ">
                         <div class="flex flex-col">
-                            <h2 class="text-5xl font-bold text-indigo-400">12</h2>
+                            <h2 class="text-5xl font-bold text-indigo-400">{{ $directContractingCount }}</h2>
                         </div>
 
                         <div class="w-14 h-14 bg-indigo-100 rounded-full grid place-items-center">
@@ -49,7 +49,7 @@
                     <h2 class="font-semibold text-gray-500 text-lg">Small Value Procurement</h2>
                     <div class="flex-1 flex justify-between items-end   ">
                         <div class="flex flex-col">
-                            <h2 class="text-5xl font-bold text-blue-400">24</h2>
+                            <h2 class="text-5xl font-bold text-blue-400">{{ $smallValueProcurementCount }}</h2>
                         </div>
 
                         <div class="w-14 h-14 bg-blue-100 rounded-full grid place-items-center">
@@ -61,7 +61,7 @@
                     <h2 class="font-semibold text-gray-500 text-lg">Emergency Cases</h2>
                     <div class="flex-1 flex justify-between items-end   ">
                         <div class="flex flex-col">
-                            <h2 class="text-5xl font-bold text-red-400">8</h2>
+                            <h2 class="text-5xl font-bold text-red-400">{{ $emergencyCasesCount }}</h2>
                         </div>
 
                         <div class="w-14 h-14 bg-red-100 rounded-full grid place-items-center">
@@ -73,7 +73,7 @@
                     <h2 class="font-semibold text-gray-600 text-lg">Others</h2>
                     <div class="flex-1 flex justify-between items-end">
                         <div class="flex flex-col">
-                            <h2 class="text-5xl font-bold text-gray-500">5</h2>
+                            <h2 class="text-5xl font-bold text-gray-500">{{ $othersCount }}</h2>
                         </div>
 
                         <button data-micromodal-trigger="modal-2" class="cursor-pointer w-14 h-14 bg-gray-300 rounded-full">
@@ -104,12 +104,12 @@
                     <div class="flex items-center space-x-2 bg-gray-100 p-5 rounded-md">
                         <div class="w-5 h-5 bg-blue-500 rounded-md"></div>
                         <span>PR Above Php 50k</span>
-                        <h2 class="ml-auto text-2xl font-black">32</h2>
+                        <h2 class="ml-auto text-2xl font-black">{{ $prAbove50kCount }}</h2>
                     </div>
                     <div class="flex items-center space-x-2 bg-gray-100 p-5 rounded-md">
                         <div class="w-5 h-5 bg-green-500 rounded-md"></div>
                         <span>PR Below Php 50k</span>
-                        <h2 class="ml-auto text-2xl font-black">12</h2>
+                        <h2 class="ml-auto text-2xl font-black">{{ $prBelow50kCount }}</h2>
                     </div>
                 </div>
             </div>
@@ -117,7 +117,7 @@
             <h2 class="font-semibold text-gray-500 text-lg mt-10 mb-4">Total Awarded Amount</h2>
             <div class="flex-1 flex flex-col items-center justify-center bg-gray-100 p-5 rounded-md">
                 <span class="flex-1 grid place-items-center">
-                    <h2 class="text-3xl font-black text-gray-600">₱12,230,705,540.00</h2>
+                    <h2 class="text-3xl font-black text-gray-600">₱{{ number_format($totalAmount, 2) }}</h2>
                 </span>
                 <button data-micromodal-trigger="modal-1"
                     class="w-full bg-red-400 py-2 text-white text-sm cursor-pointer rounded">
@@ -128,34 +128,76 @@
 
         </div>
     </div>
-    <!-- Modal 1: Offices Amount -->
+
+    <!-- Other mode -->
+    <div class="modal micromodal-slide" id="modal-2" aria-hidden="true">
+        <div class="modal__overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            tabindex="-1" data-micromodal-close>
+            <div class="modal__container bg-white rounded-lg shadow-lg p-6 w-full max-w-2xl relative" role="dialog"
+                aria-modal="true" aria-labelledby="modal-2-title">
+                <header class="modal__header flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-600" id="modal-2-title">Other Mode of Procurement</h2>
+                </header>
+                <main class="modal__content text-sm">
+                    <div class="w-full h-96 overflow-y-auto">
+                        <table class="w-full table-auto border-collapse overflow-hidden">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-700">
+                                    <th class="text-left p-3 border-b border-gray-300">Mode of Procurement</th>
+                                    <th class="text-left p-3 border-b border-gray-300 whitespace-nowrap">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($othersGrouped as $other)
+                                    <tr>
+                                        <td class="p-3 border-b border-gray-300">
+                                            {{ $other->mode_of_procurement ?: 'N/A' }}
+                                        </td>
+                                        <td class="p-3 border-b border-gray-300 whitespace-nowrap">{{ $other->total }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </main>
+                <footer class="modal__footer mt-4 text-right">
+                    <button class="bg-red-400 hover:bg-red-500 text-white text-sm px-4 py-2 rounded  cursor-pointer"
+                        data-micromodal-close>Close</button>
+                </footer>
+            </div>
+        </div>
+    </div>
+
+    <!-- Offices Amount -->
     <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
         <div class="modal__overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
             tabindex="-1" data-micromodal-close>
-            <div class="modal__container bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative" role="dialog"
+            <div class="modal__container bg-white rounded-lg shadow-lg p-6 w-full max-w-2xl relative" role="dialog"
                 aria-modal="true" aria-labelledby="modal-1-title">
                 <header class="modal__header flex justify-between items-center mb-4">
                     <h2 class="text-lg font-semibold text-gray-600" id="modal-1-title">Offices Amount</h2>
                 </header>
-                <main class="modal__content text-sm">
-                    <table class="w-full table-auto border-collapse rounded-lg overflow-hidden">
-                        <thead>
-                            <tr class="bg-gray-100 text-gray-700">
-                                <th class="text-left p-3 border-b border-gray-300">Office</th>
-                                <th class="text-left p-3 border-b border-gray-300 whitespace-nowrap">Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="p-3 border-b border-gray-300">Office 1</td>
-                                <td class="p-3 border-b border-gray-300 whitespace-nowrap">$1,200</td>
-                            </tr>
-                            <tr>
-                                <td class="p-3 border-b border-gray-300">Office 2</td>
-                                <td class="p-3 border-b border-gray-300 whitespace-nowrap">$950</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <main class="modal__content text-sm ">
+                    <div class="w-full h-96 overflow-y-auto">
+                        <table class="w-full table-auto border-collapse">
+                            <thead class="sticky top-0 bg-gray-100 z-10">
+                                <tr class="text-gray-700">
+                                    <th class="text-left p-3 border-b border-gray-300">Office</th>
+                                    <th class="text-left p-3 border-b border-gray-300 whitespace-nowrap">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($endUserGrouped as $group)
+                                    <tr>
+                                        <td class="p-3 border-b border-gray-300">{{ $group->end_user }}</td>
+                                        <td class="p-3 border-b border-gray-300 whitespace-nowrap">
+                                            ₱{{ number_format($group->total, 2) }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </main>
                 <footer class="modal__footer mt-4 text-right">
                     <button class="bg-red-400 hover:bg-red-500 text-white text-sm px-4 py-2 rounded cursor-pointer"
@@ -165,42 +207,7 @@
         </div>
     </div>
 
-    <!-- Modal 2: Menu Options -->
-    <div class="modal micromodal-slide" id="modal-2" aria-hidden="true">
-        <div class="modal__overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            tabindex="-1" data-micromodal-close>
-            <div class="modal__container bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative" role="dialog"
-                aria-modal="true" aria-labelledby="modal-2-title">
-                <header class="modal__header flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-semibold text-gray-600" id="modal-2-title">Other Mode of Procurement</h2>
-                </header>
-                <main class="modal__content text-sm">
-                    <table class="w-full table-auto border-collapse rounded-lg overflow-hidden">
-                        <thead>
-                            <tr class="bg-gray-100 text-gray-700">
-                                <th class="text-left p-3 border-b border-gray-300">Mode of Procurement</th>
-                                <th class="text-left p-3 border-b border-gray-300 whitespace-nowrap">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="p-3 border-b border-gray-300">Agency to Agency</td>
-                                <td class="p-3 border-b border-gray-300 whitespace-nowrap">6</td>
-                            </tr>
-                            <tr>
-                                <td class="p-3 border-b border-gray-300">Bla bla</td>
-                                <td class="p-3 border-b border-gray-300 whitespace-nowrap">2</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </main>
-                <footer class="modal__footer mt-4 text-right">
-                    <button class="bg-red-400 hover:bg-red-500 text-white text-sm px-4 py-2 rounded  cursor-pointer"
-                        data-micromodal-close>Close</button>
-                </footer>
-            </div>
-        </div>
-    </div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -246,7 +253,7 @@
                                 }
                             },
                             ticks: {
-                                stepSize: 1, 
+                                stepSize: 1,
                                 maxTicksLimit: 5,
                                 font: {
                                     size: 14
@@ -288,12 +295,15 @@
         document.addEventListener('DOMContentLoaded', function() {
             const ctx = document.getElementById('prChart').getContext('2d');
 
+            const prAbove = {{ $prAbove50kCount }};
+            const prBelow = {{ $prBelow50kCount }};
+
             const prChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: ['PR Above Php 50k', 'PR Below Php 50k'],
                     datasets: [{
-                        data: [30, 70],
+                        data: [prAbove, prBelow],
                         backgroundColor: ['#3B82F6', '#10B981'],
                         borderWidth: 1
                     }]

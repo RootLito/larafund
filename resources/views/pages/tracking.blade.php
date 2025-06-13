@@ -53,12 +53,18 @@
             <form action="/pr" method="post">
                 @csrf
 
-                <!-- Procurement Project -->
+
+                <small>Mode of Procurement<span class="text-red-500">*</span></small>
+                @livewire('mode-of-procurement-select')
+
+
+
+
+
                 <small>Procurement Project <span class="text-red-500">*</span></small>
                 <textarea name="procurement_project"
                     class="w-full h-20 p-2 border bg-gray-50 border-gray-300 rounded resize-none text-sm"></textarea>
 
-                <!-- Table Header -->
                 <div class="flex gap-2 items-end mt-1">
                     <div class="flex flex-col flex-1">
                         <small>Lot and Description <span class="text-red-500">*</span></small>
@@ -68,7 +74,6 @@
                     </div>
                 </div>
 
-                <!-- Dynamic Lots -->
                 <template x-for="(lot, index) in lots" :key="index">
                     <div class="flex gap-2 items-end mt-1">
                         <div class="flex flex-col flex-1">
@@ -85,7 +90,6 @@
                     </div>
                 </template>
 
-                <!-- End User & Total ABC -->
                 <div class="flex gap-2 items-end mt-3">
                     <div class="flex flex-col flex-1">
                         <small>End User <span class="text-red-500">*</span></small>
@@ -99,7 +103,6 @@
                     </div>
                 </div>
 
-                <!-- Submit Button -->
                 <button class="w-full bg-red-400 py-2 mt-5 text-white cursor-pointer rounded">
                     Save
                 </button>

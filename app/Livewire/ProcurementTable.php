@@ -13,16 +13,16 @@ class ProcurementTable extends Component
     public string $search = '';
     public string $status = '';
 
-    protected $paginationTheme = 'tailwind'; // Optional for Tailwind styling
+    protected $paginationTheme = 'tailwind'; 
 
     public function updatingSearch()
     {
-        $this->resetPage(); // Reset to page 1 on search
+        $this->resetPage(); 
     }
 
     public function updatingStatus()
     {
-        $this->resetPage(); // Reset to page 1 on filter
+        $this->resetPage(); 
     }
 
     public function render()

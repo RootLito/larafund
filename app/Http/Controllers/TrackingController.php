@@ -5,11 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\ProcurementProject;
+use Illuminate\Support\Facades\DB;
 
 class TrackingController extends Controller
 {
-
-
     
     // NEW 
     public function newpr(Request $request)
@@ -21,41 +20,27 @@ class TrackingController extends Controller
             'end_user' => ['required', 'min:3', 'max:50'],
             'total_abc' => ['required', 'min:3', 'max:50'],
         ]);
-
         $in['status'] = 'Pending';
-
         $in['lot_description'] = json_encode($in['lot_description']);
         $in['abc_per_lot'] = json_encode($in['abc_per_lot']);
-
         ProcurementProject::create($in);
-
         return redirect('/tracking')->with('success', 'Procurement project saved successfully!');
-
-
     }
 
 
     // VIEW 
     public function records(Request $request)
     {
-        // $projects =  ProcurementProject::orderBy('created_at', 'desc')->get();
-
         $selectedProject = null;
         if ($request->has('selected_id')) {
             $selectedProject = ProcurementProject::find($request->selected_id);
         }
-
         $editProject = null;
         if ($request->has('edit_id')) {  
             $editProject = ProcurementProject::find($request->edit_id);
         }
-
         return view('pages.tracking', compact('selectedProject', 'editProject', ));
-        // return view('pages.tracking', compact('projects', 'selectedProject', 'editProject', ));
     }
-
-
-
 
 
 
@@ -66,16 +51,11 @@ class TrackingController extends Controller
         $request->merge(array_map(function ($value) {
             return $value === '' ? null : $value;
         }, $request->all()));
-
         $validated = $request->validate([
             'status' => 'nullable|string', 
             'procurement_project' => 'nullable|string',
-
-
             'lot_description' => 'nullable|array|min:1', 
             'abc_per_lot' => 'nullable|array|min:1', 
-
-
             'total_abc' => 'nullable|numeric', 
             'end_user' => 'nullable|string', 
             'pr_number' => 'nullable|string',
@@ -85,7 +65,6 @@ class TrackingController extends Controller
             'twg' => 'nullable|string',
             'date_forwarded_to_budget' => 'nullable|date',
             'approved_pr_received' => 'nullable|date',
-
             'philgeps_posting_date' => 'nullable|array',
             'rfq_itb_number' => 'nullable|array',
             'bid_opening' => 'nullable|array',
@@ -118,17 +97,14 @@ class TrackingController extends Controller
             'date_forwarded_to_gss',
             'remarks',
         ];
-
         foreach ($fieldsToEncode as $field) {
             if (isset($validated[$field])) {
                 $validated[$field] = json_encode($validated[$field]);
             }
         }
-
         $procurementProject->update($validated);
         return redirect('/tracking')->with('success', 'Procurement project updated successfully!');
     }
-
 
 
 
@@ -137,7 +113,6 @@ class TrackingController extends Controller
     {
         $project = ProcurementProject::findOrFail($id);
         $project->delete();
-
         return redirect('/tracking')->with('success', 'Procurement project deleted successfully!');
     }
 
@@ -147,19 +122,64 @@ class TrackingController extends Controller
     public function dashboard()
     {
         $statuses = ['Pending', 'Completed', 'In Progress', 'Reimbursement', 'Cancelled'];
-
         $statusCounts = [];
         foreach ($statuses as $status) {
             $statusCounts[] = ProcurementProject::where('status', $status)->count();
         }
-
         $totalCount = array_sum($statusCounts);
+        $publicBiddingCount = ProcurementProject::where('mode_of_procurement', 'Public Bidding')->count();
+        $directContractingCount = ProcurementProject::where('mode_of_procurement', 'Direct Contracting')->count();
+        $smallValueProcurementCount = ProcurementProject::where('mode_of_procurement', 'Small Value Procurement')->count();
+        $emergencyCasesCount = ProcurementProject::where('mode_of_procurement', 'Emergency Cases')->count();
+        $totalAmount = ProcurementProject::sum('total_abc');
+        $prAbove50kCount = ProcurementProject::where('total_abc', '>', 50000)->count();
+        $prBelow50kCount = ProcurementProject::where('total_abc', '<=', 50000)->count();
+        $othersCount = ProcurementProject::where(function ($query) {
+            $query->whereNull('mode_of_procurement')
+                ->orWhere('mode_of_procurement', '')
+                ->orWhereNotIn('mode_of_procurement', [
+                    'Public Bidding',
+                    'Direct Contracting',
+                    'Small Value Procurement',
+                    'Emergency Cases',
+                ]);
+        })->count();
+        $othersGrouped = ProcurementProject::select('mode_of_procurement', DB::raw('count(*) as total'))
+            ->whereNotIn('mode_of_procurement', [
+                    'Public Bidding',
+                    'Direct Contracting',
+                    'Small Value Procurement',
+                    'Emergency Cases',
+                ])
+            ->whereNotNull('mode_of_procurement')
+            ->where('mode_of_procurement', '<>', '')
+            ->groupBy('mode_of_procurement')
+            ->get();
+        $endUserGrouped = ProcurementProject::select('end_user', DB::raw('SUM(total_abc) as total'))
+        ->whereNotNull('end_user')
+        ->where('end_user', '<>', '')
+        ->groupBy('end_user')
+        ->get();
+
 
         return view('pages.dashboard', [
             'totalCount' => $totalCount,
             'statusLabels' => $statuses,
             'statusData' => $statusCounts,
+            'publicBiddingCount' => $publicBiddingCount,
+            'directContractingCount' => $directContractingCount,
+            'smallValueProcurementCount' => $smallValueProcurementCount,
+            'emergencyCasesCount' => $emergencyCasesCount,
+            'othersCount' => $othersCount,
+            'othersGrouped' => $othersGrouped,
+            'totalAmount' => $totalAmount,
+            'prAbove50kCount' => $prAbove50kCount,
+            'prBelow50kCount' => $prBelow50kCount,
+            'endUserGrouped' => $endUserGrouped,
         ]);
+
+
+
     }
 
 
