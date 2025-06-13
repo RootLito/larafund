@@ -14,6 +14,8 @@ class ProcurementProject extends Model
     protected $fillable = [
         'status',
         'procurement_project',
+        'mode_of_procurement',
+        'custom_mode',
         'lot_description',
         'abc_per_lot',
         'total_abc',

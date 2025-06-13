@@ -15,11 +15,17 @@ class TrackingController extends Controller
     {
         $in = $request->validate([
             'procurement_project' => ['required', 'min:5'],
+            'mode_of_procurement' => ['required', 'min:5'],
+            'custom_mode' => ['nullable', 'string', 'min:3'],
             'lot_description' => ['required', 'min:1'],
             'abc_per_lot' => ['required', 'min:1'],
             'end_user' => ['required', 'min:3', 'max:50'],
             'total_abc' => ['required', 'min:3', 'max:50'],
         ]);
+        if ($in['mode_of_procurement'] === 'others' && !empty($in['custom_mode'])) {
+            $in['mode_of_procurement'] = $in['custom_mode'];
+        }
+        unset($in['custom_mode']); 
         $in['status'] = 'Pending';
         $in['lot_description'] = json_encode($in['lot_description']);
         $in['abc_per_lot'] = json_encode($in['abc_per_lot']);
@@ -54,6 +60,7 @@ class TrackingController extends Controller
         $validated = $request->validate([
             'status' => 'nullable|string', 
             'procurement_project' => 'nullable|string',
+            'mode_of_procurement' => 'nullable|string',
             'lot_description' => 'nullable|array|min:1', 
             'abc_per_lot' => 'nullable|array|min:1', 
             'total_abc' => 'nullable|numeric', 
@@ -186,18 +193,27 @@ class TrackingController extends Controller
     // CALENDAR
     public function calendar()
     {
-        $projects = ProcurementProject::select('id', 'procurement_project', 'created_at')->get();
+        $events = ProcurementProject::all()
+        ->filter(function ($project) {
+            $dates = json_decode($project->bid_opening, true);
+            return is_array($dates) && collect($dates)->contains(fn($d) => !is_null($d));
+        })
+        ->map(function ($project) {
+            $bidOpening = json_decode($project->bid_opening, true);
+            $validDate = collect($bidOpening)->first(fn($d) => !is_null($d));
 
-        $events = $projects->map(function ($project) {
             return [
                 'title' => $project->procurement_project,
-                'start' => Carbon::parse($project->created_at)->toDateString(),
-                'url'   => url('/project/' . $project->id),
+                'start' => $validDate,
+                'extendedProps' => [
+                    'end_user' => $project->end_user,
+                    'total_abc' => $project->total_abc,
+                    'bid_opening' => $validDate,
+                ],
             ];
-        });
+        })
+        ->values(); // <- this reindexes to make it a proper array
 
         return view('pages.calendar', compact('events'));
     }
-
-    
 }

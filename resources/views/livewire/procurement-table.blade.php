@@ -2,14 +2,12 @@
     <h2 class="text-xl font-bold text-gray-700 mb-6">PR Lists</h2>
 
     <div class="w-full flex flex-col md:flex-row mb-4 justify-between items-center gap-4">
-        <input type="search"
-            wire:model.live.debounce.500ms="search"
-            placeholder="Search PR Number, Project, or End User..."
+        <input type="search" wire:model.live.debounce.500ms="search" placeholder="Search PR Number, Project, or End User"
             class="w-full md:w-1/3 bg-gray-50 border border-gray-300 p-2 text-sm rounded focus:ring-blue-500 focus:border-blue-500">
 
         <div class="flex flex-col md:flex-row gap-2 w-full md:w-2/3 justify-end">
             <select wire:model.live="status"
-                class="text-sm w-full md:w-32 bg-gray-50 border border-gray-300 text-gray-700 rounded p-2 focus:ring-blue-500 focus:border-blue-500">
+                class="text-sm w-full md:w-52 bg-gray-50 border border-gray-300 text-gray-700 rounded p-2 focus:ring-blue-500 focus:border-blue-500">
                 <option value="">All Status</option>
                 <option value="Pending">Pending</option>
                 <option value="Completed">Completed</option>
@@ -20,27 +18,27 @@
 
 
             <select wire:model.live="mode"
-                class="text-sm w-full md:w-32 bg-gray-50 border border-gray-300 text-gray-700 rounded p-2 focus:ring-blue-500 focus:border-blue-500">
+                class="text-sm w-full md:w-52 bg-gray-50 border border-gray-300 text-gray-700 rounded p-2 focus:ring-blue-500 focus:border-blue-500">
                 <option value="">All Modes</option>
-                <option value="Shopping">Shopping</option>
-                <option value="Bidding">Bidding</option>
+                <option value="Public Bidding">Public Bidding</option>
                 <option value="Direct Contracting">Direct Contracting</option>
+                <option value="Small Value Procurement">Small Value Procurement</option>
+                <option value="Emergency Cases">Emergency Cases</option>
+                <option value="others">Others</option> 
             </select>
 
-            {{-- <select wire:model.live="endUserFilter" 
-                class="text-sm w-full md:w-32 bg-gray-50 border border-gray-300 text-gray-700 rounded p-2 focus:ring-blue-500 focus:border-blue-500">
-                <option value="">All End Users</option>
-                <option value="HR Department">HR Department</option>
-                <option value="IT Department">IT Department</option>
-                <option value="Finance Department">Finance Department</option>
-            </select> --}}
+
         </div>
     </div>
 
     <div wire:loading.flex class="justify-center items-center text-gray-600 font-semibold mb-4">
-        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+            viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+            </circle>
+            <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
         </svg>
         Loading projects...
     </div>
@@ -76,7 +74,7 @@
                     <td class="px-4 py-2 text-sm text-gray-600">
                         {{ $project->pr_number ? $project->pr_number : 'N/A' }}
                     </td>
-                    <td class="px-4 py-2 text-sm text-gray-600">{{ $project->mode_of_procurement}}</td>
+                    <td class="px-4 py-2 text-sm text-gray-600">{{ $project->mode_of_procurement }}</td>
                     <td class="px-4 py-2 text-sm text-gray-600">{{ $project->procurement_project }}</td>
                     <td class="px-4 py-2 text-sm text-gray-600">₱{{ number_format($project->total_abc, 2) }}</td>
                     <td class="px-4 py-2 text-sm text-gray-600">{{ $project->end_user }}</td>
@@ -93,7 +91,8 @@
                             </a>
 
                             <form action="{{ route('tracking.delete', $project->id) }}" method="POST"
-                                class="inline-block" onsubmit="return confirm('Are you sure you want to delete this project?');">
+                                class="inline-block"
+                                onsubmit="return confirm('Are you sure you want to delete this project?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit"

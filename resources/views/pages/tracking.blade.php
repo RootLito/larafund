@@ -55,10 +55,18 @@
 
 
                 <small>Mode of Procurement<span class="text-red-500">*</span></small>
-                @livewire('mode-of-procurement-select')
+                <select name="mode_of_procurement" id="mode_of_procurement"
+                    class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded mb-2">
+                    <option value="" selected disabled>Select Mode of Procurement</option>
+                    <option value="Public Bidding">Public Bidding</option>
+                    <option value="Direct Contracting">Direct Contracting</option>
+                    <option value="Small Value Procurement">Small Value Procurement</option>
+                    <option value="Emergency Cases">Emergency Cases</option>
+                    <option value="others">Others</option>
+                </select>
 
-
-
+                <input type="text" name="custom_mode" placeholder="Please specify" id="custom_mode_input"
+                    class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded mb-2 hidden" />
 
 
                 <small>Procurement Project <span class="text-red-500">*</span></small>
@@ -112,15 +120,16 @@
     </div>
 
 
+
+    {{-- VIEW MODAL --}}
     @if ($selectedProject)
         <div style="background-color: rgba(0,0,0,0.6)"
-            class="custom-view-modal fixed inset-0 z-50 flex items-center justify-center">
-            <div class="custom-view-container bg-white  p-6 w-7xl overflow-y-auto max-h-[90vh]">
-                <header class="custom-view-header">
-                    <h2 class="custom-view-title mb-8 text-2xl font-semibold text-gray-600">PR Details</h2>
+            class="view-modal fixed inset-0 z-50 flex items-center justify-center">
+            <div class="view-modal-container bg-white p-6 w-7xl overflow-y-auto max-h-[90vh]">
+                <header class="view-modal-header">
+                    <h2 class="view-modal-title mb-8 text-2xl font-semibold text-gray-600">PR Details</h2>
                 </header>
-
-                <main class="custom-view-content overflow-auto">
+                <main class="view-modal-content overflow-auto">
                     <div class="h-full">
                         <form action="">
                             <table
@@ -364,7 +373,7 @@
                     </div>
                 </main>
 
-                <footer class="custom-view-footer mb-3 mt-10 text-center">
+                <footer class="view-modal-footer mb-3 mt-10 text-center">
                     <a href="{{ route('tracking') }}" class="bg-red-400 text-white px-4 py-2 rounded">Close</a>
                 </footer>
             </div>
@@ -372,15 +381,15 @@
     @endif
 
 
-    {{-- EDIT  --}}
+    {{-- EDIT MODAL --}}
     @if ($editProject)
         <div style="background-color: rgba(0,0,0,0.6)"
-            class="custom-view-modal fixed inset-0 z-50 flex items-center justify-center" id="editModal">
-            <div class="custom-view-container bg-white p-6 w-7xl overflow-y-auto max-h-[90vh]">
-                <header class="custom-view-header">
-                    <h2 class="custom-view-title mb-8 text-2xl font-semibold text-gray-600">Edit PR</h2>
+            class="edit-modal fixed inset-0 z-50 flex items-center justify-center" id="editModal">
+            <div class="edit-modal-container bg-white p-6 w-7xl overflow-y-auto max-h-[90vh]">
+                <header class="edit-modal-header">
+                    <h2 class="edit-modal-title mb-8 text-2xl font-semibold text-gray-600">Edit PR</h2>
                 </header>
-                <main class="modal__content" id="edit-content">
+                <main class="edit-modal-content" id="edit-content">
                     <form action="{{ route('tracking.update', ['id' => $editProject->id]) }}" method="post">
                         @csrf
                         @method('PUT')
@@ -419,6 +428,16 @@
                                     value="{{ old('pr_number', $editProject->pr_number) }}">
                             </div>
                         </div>
+
+                        <small>Mode of Procurement<span class="text-red-500">*</span></small>
+
+                    
+
+
+                        <input type="text" name="mode_of_procurement" placeholder="Please specify" 
+                            class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded mb-2" value="{{ $editProject->mode_of_procurement }}"/>
+
+
                         <small>Procurement Project <span class="text-red-500">*</span></small>
                         <textarea type="text" name="procurement_project"
                             class="w-full h-20 p-2 border bg-gray-50 border-gray-300 rounded resize-none text-sm">{{ $editProject->procurement_project }}
@@ -691,3 +710,22 @@
     @endif
 
 @endsection
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const select = document.getElementById('mode_of_procurement');
+        const input = document.getElementById('custom_mode_input');
+
+        function toggleInput() {
+            if (select.value === 'others') {
+                input.classList.remove('hidden');
+            } else {
+                input.classList.add('hidden');
+                input.value = ''; // Optional: clear input
+            }
+        }
+
+        select.addEventListener('change', toggleInput);
+        toggleInput(); // Run on page load in case it's pre-selected
+    });
+</script>

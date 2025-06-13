@@ -12,6 +12,7 @@ class ProcurementTable extends Component
 
     public string $search = '';
     public string $status = '';
+    public string $mode = '';
 
     protected $paginationTheme = 'tailwind'; 
 
@@ -36,6 +37,18 @@ class ProcurementTable extends Component
             ->when($this->status, fn ($query) =>
                 $query->where('status', $this->status)
             )
+            ->when($this->mode, function ($query) {
+                if ($this->mode === 'others') {
+                    $query->whereNotIn('mode_of_procurement', [
+                        'Public Bidding',
+                        'Direct Contracting',
+                        'Small Value Procurement',
+                        'Emergency Cases',
+                    ]);
+                } else {
+                    $query->where('mode_of_procurement', $this->mode);
+                }
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(5);
 

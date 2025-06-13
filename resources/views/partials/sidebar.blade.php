@@ -20,14 +20,12 @@
             Tracking
         </a>
 
-        <a href="/users"
+        {{-- <a href="/users"
             class="flex bg-gray-100 items-center gap-2 h-10 text-sm text-gray-700 rounded-md hover:bg-gray-200 hover:text-gray-600  transition-all 
                   {{ request()->routeIs('users') ? 'bg-gray-300 text-gray-700' : '' }}">
-            {{-- <i class="ml-5 {{ request()->routeIs('users') ? 'fas fa-user' : 'fa-regular fa-user' }}"></i> --}}
             <i class="fas fa-user ml-5"></i>
-
             Users
-        </a>
+        </a> --}}
 
         <a href="/calendar"
             class="flex bg-gray-100 items-center gap-2 h-10 text-sm text-gray-700 rounded-md hover:bg-gray-200 hover:text-gray-600 transition-all 
