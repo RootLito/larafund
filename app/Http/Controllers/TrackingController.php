@@ -212,7 +212,7 @@ class TrackingController extends Controller
                 ],
             ];
         })
-        ->values(); // <- this reindexes to make it a proper array
+        ->values(); 
 
         return view('pages.calendar', compact('events'));
     }

@@ -90,6 +90,9 @@
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
 
+
+
+
                             <form action="{{ route('tracking.delete', $project->id) }}" method="POST"
                                 class="inline-block"
                                 onsubmit="return confirm('Are you sure you want to delete this project?');">

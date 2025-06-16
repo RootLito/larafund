@@ -84,7 +84,14 @@
             </div>
 
             <div class="flex flex-col w-full bg-white rounded-xl p-6">
-                <h2 class="font-semibold text-gray-600 text-lg mb-6">Project Status Distribution</h2>
+                <div class="w-full flex justify-between items-center">
+                    <h2 class="font-semibold text-gray-600 text-lg mb-6">Project Status Distribution</h2>
+                    <button class="h-8 bg-amber-100 text-amber-500 text-sm px-2 cursor-pointer rounded"
+                        data-micromodal-trigger="modal-2">
+                        View Pendings
+                    </button>
+
+                </div>
                 <div class="w-full p-5">
                     <canvas id="projectStatusChart"></canvas>
                 </div>
@@ -206,6 +213,49 @@
             </div>
         </div>
     </div>
+
+    <div class="modal micromodal-slide" id="modal-2" aria-hidden="true">
+        <div class="modal__overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            tabindex="-1" data-micromodal-close>
+            <div class="modal__container bg-white rounded-lg shadow-lg p-6 w-full max-w-2xl relative" role="dialog"
+                aria-modal="true" aria-labelledby="modal-2-title">
+                <header class="modal__header flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold text-gray-600" id="modal-2-title">Other Mode of Procurement</h2>
+                </header>
+                <main class="modal__content text-sm">
+                    <div class="w-full h-96 overflow-y-auto">
+                        <table class="w-full table-auto border-collapse overflow-hidden">
+                            <thead>
+                                <tr class="bg-gray-100 text-gray-700">
+                                    <th class="text-left p-3 border-b border-gray-300">Mode of Procurement</th>
+                                    <th class="text-left p-3 border-b border-gray-300 whitespace-nowrap">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($othersGrouped as $other)
+                                    <tr>
+                                        <td class="p-3 border-b border-gray-300">
+                                            {{ $other->mode_of_procurement ?: 'N/A' }}
+                                        </td>
+                                        <td class="p-3 border-b border-gray-300 whitespace-nowrap">
+                                            {{ $other->total }}
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </main>
+                <footer class="modal__footer mt-4 text-right">
+                    <button class="bg-red-400 hover:bg-red-500 text-white text-sm px-4 py-2 rounded cursor-pointer"
+                        data-micromodal-close>
+                        Close
+                    </button>
+                </footer>
+            </div>
+        </div>
+    </div>
+
 
 
 
