@@ -392,7 +392,7 @@
                 <main class="edit-modal-content" id="edit-content">
                     <form action="{{ route('tracking.update', ['id' => $editProject->id]) }}" method="post">
                         @csrf
-                        {{-- @method('PUT') --}}
+                        @method('PUT')
 
                         <div class="flex gap-2 items-end mb-3">
 

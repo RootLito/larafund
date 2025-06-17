@@ -86,8 +86,9 @@
             <div class="flex flex-col w-full bg-white rounded-xl p-6">
                 <div class="w-full flex justify-between items-center">
                     <h2 class="font-semibold text-gray-600 text-lg mb-6">Project Status Distribution</h2>
-                    <button class="h-8 bg-amber-100 text-amber-500 text-sm px-2 cursor-pointer rounded"
-                        data-micromodal-trigger="modal-2">
+                    <button
+                        class="h-8 bg-amber-100 text-amber-500 text-sm px-2 cursor-pointer rounded border border-amber-500"
+                        data-micromodal-trigger="modal-pending">
                         View Pendings
                     </button>
 
@@ -135,6 +136,107 @@
 
         </div>
     </div>
+    <div class="modal micromodal-slide" id="modal-pending" aria-hidden="true">
+        <div class="modal__overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            tabindex="-1" data-micromodal-close>
+            <div class="modal__container bg-white rounded-lg shadow-lg p-6 w-full max-w-7xl relative" role="dialog"
+                aria-modal="true" aria-labelledby="modal-pending-title">
+                <header class="modal__header mb-6">
+                    <h2 class="text-lg font-semibold text-gray-600" id="modal-pending-title">
+                        Pending Projects
+                    </h2>
+                    <small class="text-gray-600">Track all the pending project status</small>
+
+                </header>
+
+                <main class="modal__content text-sm">
+                    <div class="w-full max-h-96 overflow-y-auto">
+                        <table class="w-full table-auto border-collapse">
+                            <thead class="sticky top-0 bg-gray-100 z-10 border-b border-gray-300">
+                                <tr class="text-gray-700">
+                                    <th class="w-32 text-left p-3">PR Number</th>
+                                    <th class="text-left p-3">Project Title</th>
+                                    <th class="w-72 text-left p-3 ">Tracking Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($pendingProjectsDetails as $project)
+                                    <tr class="border-b border-gray-300">
+                                        <td class="p-3 ">{{ $project->pr_number }}</td>
+                                        <td class="p-3">{{ $project->procurement_project }}</td>
+                                        <td class="p-3 w-80">
+                                            <div class="flex items-center gap-2">
+                                                {{-- Received From Planning --}}
+                                                <span
+                                                    class="px-3 py-2  rounded-full text-xs font-semibold flex items-center gap-1
+                    {{ $project->date_received_from_planning ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500' }}">
+                                                    @if ($project->date_received_from_planning)
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                            stroke-width="3">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    @endif
+                                                    Planning
+                                                </span>
+
+                                                {{-- Received by TWG --}}
+                                                <span
+                                                    class="px-3 py-2 rounded-full text-xs font-semibold flex items-center gap-1
+                    {{ $project->date_received_by_twg ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500' }}">
+                                                    @if ($project->date_received_by_twg)
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                            stroke-width="3">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    @endif
+                                                    TWG
+                                                </span>
+
+                                                {{-- Approved PR Received --}}
+                                                <span
+                                                    class="px-3 py-2 rounded-full text-xs  font-semibold flex items-center gap-1
+                    {{ $project->approved_pr_received ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500' }}">
+                                                    @if ($project->approved_pr_received)
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                                            stroke-width="3">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                d="M5 13l4 4L19 7" />
+                                                        </svg>
+                                                    @endif
+                                                    Approved PR
+                                                </span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="p-3 text-center text-gray-500">No pending records found.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </main>
+
+                <footer class="modal__footer mt-4 text-right">
+                    <button class="bg-red-400 hover:bg-red-500 text-white text-sm px-4 py-2 rounded cursor-pointer"
+                        data-micromodal-close>
+                        Close
+                    </button>
+                </footer>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Other mode -->
     <div class="modal micromodal-slide" id="modal-2" aria-hidden="true">
@@ -160,7 +262,8 @@
                                         <td class="p-3 border-b border-gray-300">
                                             {{ $other->mode_of_procurement ?: 'N/A' }}
                                         </td>
-                                        <td class="p-3 border-b border-gray-300 whitespace-nowrap">{{ $other->total }}</td>
+                                        <td class="p-3 border-b border-gray-300 whitespace-nowrap">{{ $other->total }}
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -214,47 +317,7 @@
         </div>
     </div>
 
-    <div class="modal micromodal-slide" id="modal-2" aria-hidden="true">
-        <div class="modal__overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            tabindex="-1" data-micromodal-close>
-            <div class="modal__container bg-white rounded-lg shadow-lg p-6 w-full max-w-2xl relative" role="dialog"
-                aria-modal="true" aria-labelledby="modal-2-title">
-                <header class="modal__header flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-semibold text-gray-600" id="modal-2-title">Other Mode of Procurement</h2>
-                </header>
-                <main class="modal__content text-sm">
-                    <div class="w-full h-96 overflow-y-auto">
-                        <table class="w-full table-auto border-collapse overflow-hidden">
-                            <thead>
-                                <tr class="bg-gray-100 text-gray-700">
-                                    <th class="text-left p-3 border-b border-gray-300">Mode of Procurement</th>
-                                    <th class="text-left p-3 border-b border-gray-300 whitespace-nowrap">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($othersGrouped as $other)
-                                    <tr>
-                                        <td class="p-3 border-b border-gray-300">
-                                            {{ $other->mode_of_procurement ?: 'N/A' }}
-                                        </td>
-                                        <td class="p-3 border-b border-gray-300 whitespace-nowrap">
-                                            {{ $other->total }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </main>
-                <footer class="modal__footer mt-4 text-right">
-                    <button class="bg-red-400 hover:bg-red-500 text-white text-sm px-4 py-2 rounded cursor-pointer"
-                        data-micromodal-close>
-                        Close
-                    </button>
-                </footer>
-            </div>
-        </div>
-    </div>
+
 
 
 

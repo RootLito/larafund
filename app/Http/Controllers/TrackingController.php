@@ -168,6 +168,19 @@ class TrackingController extends Controller
         ->groupBy('end_user')
         ->get();
 
+        $pendingProjectsDetails = ProcurementProject::select(
+            'procurement_project',
+            'pr_number',
+            'date_received_from_planning',
+            'date_received_by_twg',
+            'approved_pr_received'
+        )
+        ->where('status', 'Pending')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+
+
 
         return view('pages.dashboard', [
             'totalCount' => $totalCount,
@@ -183,10 +196,8 @@ class TrackingController extends Controller
             'prAbove50kCount' => $prAbove50kCount,
             'prBelow50kCount' => $prBelow50kCount,
             'endUserGrouped' => $endUserGrouped,
+            'pendingProjectsDetails' => $pendingProjectsDetails,
         ]);
-
-
-
     }
 
 
