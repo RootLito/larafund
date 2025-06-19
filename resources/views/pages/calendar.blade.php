@@ -3,12 +3,47 @@
 @section('title', 'Calendar')
 
 @section('content')
+    <style>
+        .fc-event.philgeps-advertisement {
+            @apply bg-blue-500 border-blue-500 text-white !important;
+        }
+        .fc-event.pre-bid {
+            @apply bg-green-500 border-green-500 text-white !important;
+        }
+        .fc-event.bid-opening {
+            @apply bg-yellow-500 border-yellow-500 text-black !important;
+        }
+        .fc-event.post-qualification {
+            @apply bg-red-500 border-red-500 text-white !important;
+        }
+    </style>
+
     <div class="flex-1 p-10">
         <div class="w-full h-full bg-white p-10 rounded-lg">
+            <div class="flex space-x-4 mb-4 justify-center">
+                <div class="flex items-center space-x-2">
+                    <span class="w-4 h-4 bg-blue-500 rounded"></span>
+                    <span>PhilGeps Advertisement</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-4 h-4 bg-green-500 rounded"></span>
+                    <span>Pre-bid Conference</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-4 h-4 bg-yellow-500 rounded"></span>
+                    <span>Bid Opening</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-4 h-4 bg-red-500 rounded"></span>
+                    <span>Post Qualification</span>
+                </div>
+            </div>
+
             <div id='calendar'></div>
         </div>
     </div>
-    <div id="eventModal" class="fixed inset-0  hidden items-center justify-center z-50"
+
+    <div id="eventModal" class="fixed inset-0 hidden items-center justify-center z-50"
         style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="bg-white p-6 rounded-lg max-w-2xl w-full">
             <h3 class="text-lg font-bold mb-2" id="modalTitle">Event Details</h3>
@@ -24,38 +59,40 @@
             var calendarEl = document.getElementById('calendar');
             var projectEvents = @json($events);
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                // showNonCurrentDates: false,
-                fixedWeekCount: false,      
-                events: projectEvents,
-                dayMaxEvents: true,
-                eventClick: function(info) {
-                    info.jsEvent.preventDefault();
-                    document.getElementById('modalTitle').innerText = info.event.title;
-                    let details = `
-                        <table class="text-sm w-full">
-                            <tr>
-                                <td class="font-bold pr-2 py-2">Bid Opening:</td>
-                                <td>${info.event.extendedProps.bid_opening}</td>
-                            </tr>
-                            <tr>
-                                <td class="font-bold pr-2 py-2">End User:</td>
-                                <td>${info.event.extendedProps.end_user}</td>
-                            </tr>
-                            <tr>
-                                <td class="font-bold pr-2 py-2">ABC:</td>
-                                <td>${info.event.extendedProps.total_abc}</td>
-                            </tr>
-                        </table>
-                    `;
-                    document.getElementById('modalDate').innerHTML = details;
-                    document.getElementById('eventModal').classList.remove('hidden');
-                    document.getElementById('eventModal').classList.add('flex');
-                }
-            });
+    initialView: 'dayGridMonth',
+    events: projectEvents,
+    eventRender: function(info) {
+        info.el.style.backgroundColor = info.event.extendedProps.eventColor;
+    },
+    eventClick: function(info) {
+        info.jsEvent.preventDefault();
+        document.getElementById('modalTitle').innerText = info.event.title;
+        let details = `
+            <table class="text-sm w-full">
+                <tr>
+                    <td class="font-bold pr-2 py-2">Bid Opening:</td>
+                    <td>${info.event.extendedProps.bid_opening ?? 'N/A'}</td>
+                </tr>
+                <tr>
+                    <td class="font-bold pr-2 py-2">End User:</td>
+                    <td>${info.event.extendedProps.end_user ?? 'N/A'}</td>
+                </tr>
+                <tr>
+                    <td class="font-bold pr-2 py-2">ABC:</td>
+                    <td>${info.event.extendedProps.total_abc ?? 'N/A'}</td>
+                </tr>
+            </table>
+        `;
+        document.getElementById('modalDate').innerHTML = details;
+        document.getElementById('eventModal').classList.remove('hidden');
+        document.getElementById('eventModal').classList.add('flex');
+    }
+});
 
-            calendar.render();
+calendar.render();
+
         });
+
         function closeModal() {
             document.getElementById('eventModal').classList.remove('flex');
             document.getElementById('eventModal').classList.add('hidden');

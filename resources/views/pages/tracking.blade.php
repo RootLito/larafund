@@ -442,18 +442,19 @@
                         <textarea type="text" name="procurement_project"
                             class="w-full h-20 p-2 border bg-gray-50 border-gray-300 rounded resize-none text-sm">{{ $editProject->procurement_project }}
                         </textarea>
+                        
                         @php
                             $lotDescriptions = json_decode($editProject->lot_description, true);
                             $abcPerLots = json_decode($editProject->abc_per_lot, true);
+                            $philgeps_advertisement = json_decode($editProject->philgeps_advertisement, true);
                             $philgeps_posting_date = json_decode($editProject->philgeps_posting_date, true);
                             $rfq_itb_number = json_decode($editProject->rfq_itb_number, true);
+                            $pre_bid_conference = json_decode($editProject->pre_bid_conference, true);
                             $bid_opening = json_decode($editProject->bid_opening, true);
+                            $post_qualification = json_decode($editProject->post_qualification, true);
                             $sq_number = json_decode($editProject->sq_number, true);
                             $bac_res_number = json_decode($editProject->bac_res_number, true);
-                            $date_of_bac_res_completely_signed = json_decode(
-                                $editProject->date_of_bac_res_completely_signed,
-                                true,
-                            );
+                            $date_of_bac_res_completely_signed = json_decode($editProject->date_of_bac_res_completely_signed, true);
                             $noa_number = json_decode($editProject->noa_number, true);
                             $canvasser = json_decode($editProject->canvasser, true);
                             $name_of_supplier = json_decode($editProject->name_of_supplier, true);
@@ -461,6 +462,7 @@
                             $date_forwarded_to_gss = json_decode($editProject->date_forwarded_to_gss, true);
                             $remarks = json_decode($editProject->remarks, true);
                         @endphp
+
 
 
                         <div class="flex flex-col gap-1  overflow-x-auto">
@@ -473,13 +475,22 @@
                                         <small>ABC per LOT <span class="text-red-500">*</span></small>
                                     </td>
                                     <td class="whitespace-nowrap">
+                                        <small>PhilGEPS Advertisement <span class="text-red-500">*</span></small>
+                                    </td>
+                                    <td class="whitespace-nowrap">
                                         <small>PhilGEPS Posting Date <span class="text-red-500">*</span></small>
                                     </td>
                                     <td class="whitespace-nowrap">
                                         <small>RFQ/ITB Number <span class="text-red-500">*</span></small>
                                     </td>
                                     <td class="whitespace-nowrap">
+                                        <small>Pre Bid Conference<span class="text-red-500">*</span></small>
+                                    </td>
+                                    <td class="whitespace-nowrap">
                                         <small>Bid Opening <span class="text-red-500">*</span></small>
+                                    </td>
+                                    <td class="whitespace-nowrap">
+                                        <small>Post Qualification Presentation<span class="text-red-500">*</span></small>
                                     </td>
                                     <td class="whitespace-nowrap">
                                         <small>SQ Number <span class="text-red-500">*</span></small>
@@ -527,12 +538,28 @@
                                                     value="{{ old('abc_per_lot.' . $index, $abcPerLots[$index] ?? '') }}">
                                             </td>
 
+
+
+
+
+                                            <td class="whitespace-nowrap pr-1">
+                                                <input type="date" name="philgeps_advertisement[]"
+                                                    class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                    id="philgeps_advertisement_{{ $index }}"
+                                                    value="{{ old('philgeps_advertisement.' . $index, $philgeps_advertisement[$index] ?? '') }}">
+                                            </td>
+
                                             <td class="whitespace-nowrap pr-1">
                                                 <input type="date" name="philgeps_posting_date[]"
                                                     class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
                                                     id="philgeps_posting_date_{{ $index }}"
                                                     value="{{ old('philgeps_posting_date.' . $index, $philgeps_posting_date[$index] ?? '') }}">
                                             </td>
+
+
+
+
+
 
                                             <td class="whitespace-nowrap pr-1">
                                                 <input type="text" name="rfq_itb_number[]"
@@ -541,12 +568,36 @@
                                                     value="{{ old('rfq_itb_number.' . $index, $rfq_itb_number[$index] ?? '') }}">
                                             </td>
 
+
+
+
+
+
+                                            <td class="whitespace-nowrap pr-1">
+                                                <input type="date" name="pre_bid_conference[]"
+                                                    class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                    id="pre_bid_conference_{{ $index }}"
+                                                    value="{{ old('pre_bid_conference.' . $index, $pre_bid_conference[$index] ?? '') }}">
+                                            </td>
+
                                             <td class="whitespace-nowrap pr-1">
                                                 <input type="date" name="bid_opening[]"
                                                     class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
                                                     id="bid_opening_{{ $index }}"
                                                     value="{{ old('bid_opening.' . $index, $bid_opening[$index] ?? '') }}">
                                             </td>
+
+                                            <td class="whitespace-nowrap pr-1">
+                                                <input type="date" name="post_qualification[]"
+                                                    class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                    id="post_qualification_{{ $index }}"
+                                                    value="{{ old('post_qualification.' . $index, $post_qualification[$index] ?? '') }}">
+                                            </td>
+
+
+
+
+
 
                                             <td class="whitespace-nowrap pr-1">
                                                 <input type="text" name="sq_number[]"

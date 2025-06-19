@@ -27,9 +27,12 @@ class ProcurementProject extends Model
         'twg',
         'date_forwarded_to_budget',
         'approved_pr_received',
+        'philgeps_advertisement',
         'philgeps_posting_date',
         'rfq_itb_number',
+        'pre_bid_conference',
         'bid_opening',
+        'post_qualification',
         'sq_number',
         'bac_res_number',
         'date_of_bac_res_completely_signed',
@@ -40,5 +43,7 @@ class ProcurementProject extends Model
         'date_forwarded_to_gss',
         'remarks',
     ];
+
+    
 
 }
