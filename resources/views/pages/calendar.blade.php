@@ -10,7 +10,7 @@
     </div>
     <div id="eventModal" class="fixed inset-0  hidden items-center justify-center z-50"
         style="background-color: rgba(0, 0, 0, 0.5);">
-        <div class="bg-white p-6 rounded-lg max-w-md w-full">
+        <div class="bg-white p-6 rounded-lg max-w-2xl w-full">
             <h3 class="text-lg font-bold mb-2" id="modalTitle">Event Details</h3>
             <p id="modalDate" class="text-sm text-gray-600 mb-4"></p>
             <div class="flex justify-end">
@@ -43,7 +43,7 @@
                                 <td>${info.event.extendedProps.end_user}</td>
                             </tr>
                             <tr>
-                                <td class="font-bold pr-2 py-2">Amount:</td>
+                                <td class="font-bold pr-2 py-2">ABC:</td>
                                 <td>${info.event.extendedProps.total_abc}</td>
                             </tr>
                         </table>

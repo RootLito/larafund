@@ -51,7 +51,9 @@ Route::post('/logout', [UserController::class, 'logout']);
 //TRACKING CONTROLLER
 Route::post('/pr', [TrackingController::class, 'newpr']);
 Route::put('/tracking/{id}', [TrackingController::class, 'update'])->name('tracking.update');
-Route::delete('/tracking/delete/{id}', [TrackingController::class, 'delete'])->name('tracking.delete');
+// Route::delete('/tracking/delete/{id}', [TrackingController::class, 'delete'])->name('tracking.delete');
+Route::delete('/tracking/{id}', [TrackingController::class, 'destroy'])->name('tracking.delete');
+
 
 
 //CALENDAR CONTROLLER

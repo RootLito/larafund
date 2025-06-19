@@ -1,6 +1,9 @@
 <div class="md:w-full h-full bg-white p-6 rounded-lg">
-    <h2 class="text-xl font-bold text-gray-700 mb-6">PR Lists</h2>
-
+    <div class="w-full flex items-center justify-between mb-6 ">
+        <h2 class="text-xl font-bold text-gray-700">PR Lists</h2>
+        <button class="bg-green-400 text-white text-sm w-28 py-2 rounded cursor-pointer"><i
+                class="fa-solid fa-file-excel mr-1"></i> Export</button>
+    </div>
     <div class="w-full flex flex-col md:flex-row mb-4 justify-between items-center gap-4">
         <input type="search" wire:model.live.debounce.500ms="search" placeholder="Search PR Number, Project, or End User"
             class="w-full md:w-1/3 bg-gray-50 border border-gray-300 p-2 text-sm rounded focus:ring-blue-500 focus:border-blue-500">
@@ -24,7 +27,7 @@
                 <option value="Direct Contracting">Direct Contracting</option>
                 <option value="Small Value Procurement">Small Value Procurement</option>
                 <option value="Emergency Cases">Emergency Cases</option>
-                <option value="others">Others</option> 
+                <option value="others">Others</option>
             </select>
 
 
@@ -46,9 +49,9 @@
     <table class="w-full table-auto border-collapse border-t border-b p-1  border-gray-300 rounded-lg ">
         <thead class="border-b border-gray-300">
             <tr class="bg-gray-100 text-gray-600">
-                <th class="px-4 py-4 text-left text-sm">Status</th>
-                <th class="px-4 py-2 text-left text-sm">PR Number</th>
-                <th class="px-4 py-2 text-left text-sm">Mode of Procurement</th>
+                <th class="px-4 py-4 text-left text-sm w-36">Status</th>
+                <th class="px-4 py-2 text-left text-sm w-32">PR Number</th>
+                <th class="px-4 py-2 text-left text-sm w-46">Mode of Procurement</th>
                 <th class="px-4 py-2 text-left text-sm">Procurement Project</th>
                 <th class="px-4 py-2 text-left text-sm">Total ABC</th>
                 <th class="px-4 py-2 text-left text-sm">End User</th>
@@ -90,10 +93,15 @@
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
 
+                            <button type="button" class="px-4 py-2 text-white bg-red-400 rounded-md cursor-pointer"
+                                data-micromodal-trigger="modal-delete" data-project-id="{{ $project->id }}">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
 
 
 
-                            <form action="{{ route('tracking.delete', $project->id) }}" method="POST"
+
+                            {{-- <form action="{{ route('tracking.delete', $project->id) }}" method="POST"
                                 class="inline-block"
                                 onsubmit="return confirm('Are you sure you want to delete this project?');">
                                 @csrf
@@ -102,7 +110,7 @@
                                     class="px-4 py-2 text-white bg-red-400 rounded-md cursor-pointer">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
-                            </form>
+                            </form> --}}
                         </div>
                     </td>
                 </tr>
@@ -117,4 +125,53 @@
     <div class="mt-4">
         {{ $projects->links() }}
     </div>
+
+    <div class="modal micromodal-slide" id="modal-delete" aria-hidden="true">
+        <div class="modal__overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            tabindex="-1" data-micromodal-close>
+            <div class="modal__container bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative" role="dialog"
+                aria-modal="true" aria-labelledby="modal-delete-title">
+                <header class="modal__header mb-6 flex justify-between items-center">
+                    <h2 class="text-lg font-semibold text-gray-600" id="modal-delete-title">
+                        Confirm Deletion
+                    </h2>
+                </header>
+                <main class="modal__content mb-6 text-gray-700">
+                    <p>Are you sure you want to delete this project?</p>
+                </main>
+                <footer class="modal__footer flex justify-end space-x-3">
+                    <form id="delete-form" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit"
+                            class="px-4 py-2 text-white text-sm cursor-pointer bg-red-400 rounded-md hover:bg-red-700 transition">
+                            Yes, Delete
+                        </button>
+                        <button type="button"
+                            class="px-4 py-2 bg-gray-300 text-sm cursor-pointer rounded-md hover:bg-gray-400 transition"
+                            data-micromodal-close>
+                            Cancel
+                        </button>
+                    </form>
+                </footer>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('[data-micromodal-trigger="modal-delete"]').forEach(button => {
+            button.addEventListener('click', function() {
+                const projectId = this.getAttribute('data-project-id');
+                const form = document.getElementById('delete-form');
+                form.setAttribute('action',
+                    `/tracking/${projectId}`); 
+                MicroModal.show('modal-delete');
+            });
+        });
+    });
+</script>

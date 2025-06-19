@@ -129,7 +129,7 @@
                 </span>
                 <button data-micromodal-trigger="modal-1"
                     class="w-full bg-red-400 py-2 text-white text-sm cursor-pointer rounded">
-                    View Offices Amount
+                    View Amount
                 </button>
             </div>
 
@@ -278,14 +278,14 @@
         </div>
     </div>
 
-    <!-- Offices Amount -->
+    <!--  Amount -->
     <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
         <div class="modal__overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
             tabindex="-1" data-micromodal-close>
             <div class="modal__container bg-white rounded-lg shadow-lg p-6 w-full max-w-2xl relative" role="dialog"
                 aria-modal="true" aria-labelledby="modal-1-title">
                 <header class="modal__header flex justify-between items-center mb-4">
-                    <h2 class="text-lg font-semibold text-gray-600" id="modal-1-title">Offices Amount</h2>
+                    <h2 class="text-lg font-semibold text-gray-600" id="modal-1-title">Awarded Amount Distribution</h2>
                 </header>
                 <main class="modal__content text-sm ">
                     <div class="w-full h-96 overflow-y-auto">

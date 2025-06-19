@@ -116,12 +116,21 @@ class TrackingController extends Controller
 
 
     // DELETE
-    public function delete($id)
+    // public function delete($id)
+    // {
+    //     $project = ProcurementProject::findOrFail($id);
+    //     $project->delete();
+    //     return redirect('/tracking')->with('success', 'Procurement project deleted successfully!');
+    // }
+    public function destroy($id)
     {
+        // find and delete the project
         $project = ProcurementProject::findOrFail($id);
         $project->delete();
-        return redirect('/tracking')->with('success', 'Procurement project deleted successfully!');
+
+       return redirect('/tracking')->with('success', 'Procurement project deleted successfully!');
     }
+
 
 
 
