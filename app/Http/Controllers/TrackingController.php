@@ -45,8 +45,21 @@ class TrackingController extends Controller
         if ($request->has('edit_id')) {
             $editProject = ProcurementProject::find($request->edit_id);
         }
+
+        if ($selectedProject) {
+            return view('pages.action.view', compact('selectedProject'));  
+        }
+
+        if ($editProject) {
+            return view('pages.action.edit', compact('editProject')); 
+        }
+
         return view('pages.tracking', compact('selectedProject', 'editProject', ));
     }
+
+
+
+    
 
 
 
@@ -135,20 +148,35 @@ class TrackingController extends Controller
 
 
     // DELETE
-    // public function delete($id)
-    // {
-    //     $project = ProcurementProject::findOrFail($id);
-    //     $project->delete();
-    //     return redirect('/tracking')->with('success', 'Procurement project deleted successfully!');
-    // }
+    public function viewProject(Request $request)
+    {
+        if ($request->has('selected_id')) {
+            $selectedProject = ProcurementProject::find($request->selected_id);
+            return view('pages.action.view', compact('selectedProject'));
+        }
+        return redirect()->route('tracking')->with('error', 'Project not found.');
+    }
+
+    public function editProject(Request $request)
+    {
+        if ($request->has('edit_id')) {
+            $editProject = ProcurementProject::find($request->edit_id);
+            return view('pages.action.edit', compact('editProject'));
+        }
+
+        return redirect()->route('tracking')->with('error', 'Project not found.');
+    }
     public function destroy($id)
     {
-        // find and delete the project
         $project = ProcurementProject::findOrFail($id);
         $project->delete();
 
         return redirect('/tracking')->with('success', 'Procurement project deleted successfully!');
     }
+
+
+
+
 
 
 
@@ -295,6 +323,41 @@ class TrackingController extends Controller
         }
         // dd($events);
         return view('pages.calendar', ['events' => $events->values()]);
+    }
+
+
+
+    public function search(Request $request)
+    {
+        $query = ProcurementProject::query();
+
+        // Apply search filter
+        if ($request->has('search') && $request->search != '') {
+            $searchTerm = $request->search;
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('pr_number', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('procurement_project', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('end_user', 'LIKE', "%{$searchTerm}%");
+            });
+        }
+
+        // Apply status filter
+        if ($request->has('status') && $request->status != '') {
+            $query->where('status', $request->status);
+        }
+
+        // Apply mode filter
+        if ($request->has('mode') && $request->mode != '') {
+            $query->where('mode_of_procurement', $request->mode);
+        }
+
+        $projects = $query->latest()->paginate(10); // Or your desired number per page
+
+        // Return data and rendered pagination links as JSON
+        return response()->json([
+            'data' => $projects->items(),
+            'links' => (string) $projects->links(), // Render the links to a string
+        ]);
     }
 
 }

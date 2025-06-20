@@ -63,3 +63,23 @@ Route::get('/calendar', [TrackingController::class, 'calendar'])->name('calendar
 
 
 
+
+
+
+// Route::get('/tracking/search', [TrackingController::class, 'search'])->name('tracking.search');
+Route::get('/projects/search', [TrackingController::class, 'search'])->name('projects.search');
+
+
+
+Route::get('/action/edit', function () {
+    return view('pages.action.edit'); 
+})->name('action.edit');
+
+
+Route::get('/view', [TrackingController::class, 'viewProject'])->name('project.action.view');
+Route::get('/edit', [TrackingController::class, 'editProject'])->name('project.action.edit');
+
+
+
+
+

@@ -83,34 +83,32 @@
                     <td class="px-4 py-2 text-sm text-gray-600">{{ $project->end_user }}</td>
                     <td class="px-4 py-2 text-sm text-gray-600 w-auto whitespace-nowrap">
                         <div class="flex gap-2 flex-nowrap">
-                            <a href="{{ url()->current() }}?selected_id={{ $project->id }}"
+                            {{-- <a href="{{ url()->current() }}?selected_id={{ $project->id }}"
+                                class="px-4 py-2 text-white bg-blue-400 rounded-md cursor-pointer">
+                                <i class="fa-solid fa-eye"></i>
+                            </a> --}}
+
+
+                            {{-- <a href="{{ url()->current() }}?edit_id={{ $project->id }}"
+                                class="px-4 py-2 text-white bg-green-400 rounded-md cursor-pointer">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a> --}}
+
+                            <a href="{{ route('project.action.view', ['selected_id' => $project->id]) }}"
                                 class="px-4 py-2 text-white bg-blue-400 rounded-md cursor-pointer">
                                 <i class="fa-solid fa-eye"></i>
                             </a>
 
-                            <a href="{{ url()->current() }}?edit_id={{ $project->id }}"
+                            <a href="{{ route('project.action.edit', ['edit_id' => $project->id]) }}"
                                 class="px-4 py-2 text-white bg-green-400 rounded-md cursor-pointer">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
+
 
                             <button type="button" class="px-4 py-2 text-white bg-red-400 rounded-md cursor-pointer"
                                 data-micromodal-trigger="modal-delete" data-project-id="{{ $project->id }}">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
-
-
-
-
-                            {{-- <form action="{{ route('tracking.delete', $project->id) }}" method="POST"
-                                class="inline-block"
-                                onsubmit="return confirm('Are you sure you want to delete this project?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                    class="px-4 py-2 text-white bg-red-400 rounded-md cursor-pointer">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            </form> --}}
                         </div>
                     </td>
                 </tr>
@@ -169,7 +167,7 @@
                 const projectId = this.getAttribute('data-project-id');
                 const form = document.getElementById('delete-form');
                 form.setAttribute('action',
-                    `/tracking/${projectId}`); 
+                    `/tracking/${projectId}`);
                 MicroModal.show('modal-delete');
             });
         });

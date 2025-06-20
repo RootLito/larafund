@@ -7,12 +7,15 @@
         .fc-event.philgeps-advertisement {
             @apply bg-blue-500 border-blue-500 text-white !important;
         }
+
         .fc-event.pre-bid {
             @apply bg-green-500 border-green-500 text-white !important;
         }
+
         .fc-event.bid-opening {
             @apply bg-yellow-500 border-yellow-500 text-black !important;
         }
+
         .fc-event.post-qualification {
             @apply bg-red-500 border-red-500 text-white !important;
         }
@@ -59,15 +62,15 @@
             var calendarEl = document.getElementById('calendar');
             var projectEvents = @json($events);
             var calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    events: projectEvents,
-    eventRender: function(info) {
-        info.el.style.backgroundColor = info.event.extendedProps.eventColor;
-    },
-    eventClick: function(info) {
-        info.jsEvent.preventDefault();
-        document.getElementById('modalTitle').innerText = info.event.title;
-        let details = `
+                initialView: 'dayGridMonth',
+                events: projectEvents,
+                eventRender: function(info) {
+                    info.el.style.backgroundColor = info.event.extendedProps.eventColor;
+                },
+                eventClick: function(info) {
+                    info.jsEvent.preventDefault();
+                    document.getElementById('modalTitle').innerText = info.event.title;
+                    let details = `
             <table class="text-sm w-full">
                 <tr>
                     <td class="font-bold pr-2 py-2">Bid Opening:</td>
@@ -83,13 +86,13 @@
                 </tr>
             </table>
         `;
-        document.getElementById('modalDate').innerHTML = details;
-        document.getElementById('eventModal').classList.remove('hidden');
-        document.getElementById('eventModal').classList.add('flex');
-    }
-});
+                    document.getElementById('modalDate').innerHTML = details;
+                    document.getElementById('eventModal').classList.remove('hidden');
+                    document.getElementById('eventModal').classList.add('flex');
+                }
+            });
 
-calendar.render();
+            calendar.render();
 
         });
 
