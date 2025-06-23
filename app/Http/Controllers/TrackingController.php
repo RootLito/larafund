@@ -7,6 +7,8 @@ use Illuminate\Support\Carbon;
 use App\Models\ProcurementProject;
 use Illuminate\Support\Facades\DB;
 
+
+
 class TrackingController extends Controller
 {
 
@@ -47,11 +49,11 @@ class TrackingController extends Controller
         }
 
         if ($selectedProject) {
-            return view('pages.action.view', compact('selectedProject'));  
+            return view('pages.action.view', compact('selectedProject'));
         }
 
         if ($editProject) {
-            return view('pages.action.edit', compact('editProject')); 
+            return view('pages.action.edit', compact('editProject'));
         }
 
         return view('pages.tracking', compact('selectedProject', 'editProject', ));
@@ -59,7 +61,7 @@ class TrackingController extends Controller
 
 
 
-    
+
 
 
 
@@ -276,7 +278,8 @@ class TrackingController extends Controller
                     'extendedProps' => [
                         'end_user' => $project->end_user,
                         'total_abc' => $project->total_abc,
-                        'bid_opening' => $date,
+                        'event_type' => 'PhilGEPS Advertisement',
+                        'event_date' => $date,
                     ],
                 ]);
             }
@@ -289,7 +292,8 @@ class TrackingController extends Controller
                     'extendedProps' => [
                         'end_user' => $project->end_user,
                         'total_abc' => $project->total_abc,
-                        'bid_opening' => $date,
+                        'event_type' => 'Pre-Bid Conference',
+                        'event_date' => $date,
                     ],
                 ]);
             }
@@ -302,7 +306,8 @@ class TrackingController extends Controller
                     'extendedProps' => [
                         'end_user' => $project->end_user,
                         'total_abc' => $project->total_abc,
-                        'bid_opening' => $date,
+                        'event_type' => 'Bid Opening',
+                        'event_date' => $date,
                     ],
                 ]);
             }
@@ -311,17 +316,17 @@ class TrackingController extends Controller
                 $events->push([
                     'title' => $project->procurement_project,
                     'start' => $date,
-                    'color' => '#f56565', // Red color
+                    'color' => '#f56565',
                     'extendedProps' => [
                         'end_user' => $project->end_user,
                         'total_abc' => $project->total_abc,
-                        'bid_opening' => $date,
+                        'event_type' => 'Post-Qua Report Presentation',
+                        'event_date' => $date,
                     ],
                 ]);
             }
-
         }
-        // dd($events);
+
         return view('pages.calendar', ['events' => $events->values()]);
     }
 
@@ -331,7 +336,6 @@ class TrackingController extends Controller
     {
         $query = ProcurementProject::query();
 
-        // Apply search filter
         if ($request->has('search') && $request->search != '') {
             $searchTerm = $request->search;
             $query->where(function ($q) use ($searchTerm) {
@@ -341,23 +345,27 @@ class TrackingController extends Controller
             });
         }
 
-        // Apply status filter
         if ($request->has('status') && $request->status != '') {
             $query->where('status', $request->status);
         }
 
-        // Apply mode filter
         if ($request->has('mode') && $request->mode != '') {
             $query->where('mode_of_procurement', $request->mode);
         }
 
-        $projects = $query->latest()->paginate(10); // Or your desired number per page
+        $projects = $query->latest()->paginate(10);
 
-        // Return data and rendered pagination links as JSON
         return response()->json([
             'data' => $projects->items(),
-            'links' => (string) $projects->links(), // Render the links to a string
+            'links' => (string) $projects->links(),
         ]);
     }
+
+
+
+
+
+
+
 
 }

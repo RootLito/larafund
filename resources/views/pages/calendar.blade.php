@@ -38,7 +38,7 @@
                 </div>
                 <div class="flex items-center space-x-2">
                     <span class="w-4 h-4 bg-red-500 rounded"></span>
-                    <span>Post Qualification</span>
+                    <span>Post-Qua Report Presentation</span>
                 </div>
             </div>
 
@@ -61,31 +61,43 @@
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
             var projectEvents = @json($events);
+
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
+                showNonCurrentDates: true,
+                fixedWeekCount: false,
+                dayMaxEvents: false,
                 events: projectEvents,
                 eventRender: function(info) {
-                    info.el.style.backgroundColor = info.event.extendedProps.eventColor;
+                    info.el.style.backgroundColor = info.event.extendedProps.color || info.event
+                        .backgroundColor;
                 },
                 eventClick: function(info) {
                     info.jsEvent.preventDefault();
                     document.getElementById('modalTitle').innerText = info.event.title;
+
+                    const eventType = info.event.extendedProps.event_type ?? 'N/A';
+                    const eventDate = info.event.extendedProps.event_date ?? 'N/A';
+                    const endUser = info.event.extendedProps.end_user ?? 'N/A';
+                    const totalABC = info.event.extendedProps.total_abc ?? 'N/A';
+
                     let details = `
-            <table class="text-sm w-full">
-                <tr>
-                    <td class="font-bold pr-2 py-2">Bid Opening:</td>
-                    <td>${info.event.extendedProps.bid_opening ?? 'N/A'}</td>
-                </tr>
-                <tr>
-                    <td class="font-bold pr-2 py-2">End User:</td>
-                    <td>${info.event.extendedProps.end_user ?? 'N/A'}</td>
-                </tr>
-                <tr>
-                    <td class="font-bold pr-2 py-2">ABC:</td>
-                    <td>${info.event.extendedProps.total_abc ?? 'N/A'}</td>
-                </tr>
-            </table>
-        `;
+                <table class="text-sm w-full">
+                    <tr>
+                        <td class="font-bold pr-2 py-2">${eventType}:</td>
+                        <td>${eventDate}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold pr-2 py-2">End User:</td>
+                        <td>${endUser}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold pr-2 py-2">ABC:</td>
+                        <td>${totalABC}</td>
+                    </tr>
+                </table>
+            `;
+
                     document.getElementById('modalDate').innerHTML = details;
                     document.getElementById('eventModal').classList.remove('hidden');
                     document.getElementById('eventModal').classList.add('flex');
@@ -93,7 +105,6 @@
             });
 
             calendar.render();
-
         });
 
         function closeModal() {
@@ -101,4 +112,7 @@
             document.getElementById('eventModal').classList.add('hidden');
         }
     </script>
+
+
+    <script></script>
 @endsection

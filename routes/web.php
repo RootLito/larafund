@@ -82,4 +82,10 @@ Route::get('/edit', [TrackingController::class, 'editProject'])->name('project.a
 
 
 
+//export
+Route::post('/tracking/export', [TrackingController::class, 'export'])->name('tracking.export');
+
+
+
+
 

@@ -1,11 +1,24 @@
 <div class="md:w-full h-full bg-white p-6 rounded-lg">
     <div class="w-full flex items-center justify-between mb-6 ">
         <h2 class="text-xl font-bold text-gray-700">PR Lists</h2>
-        <button class="bg-green-400 text-white text-sm w-28 py-2 rounded cursor-pointer"><i
-                class="fa-solid fa-file-excel mr-1"></i> Export</button>
+        {{-- <button class="bg-green-400 text-white text-sm w-28 py-2 rounded cursor-pointer"><i
+                class="fa-solid fa-file-excel mr-1"></i> Export</button> --}}
+        {{-- <form action="{{ route('tracking.export') }}" method="POST">
+            @csrf
+            <button type="submit" class="bg-green-400 text-white text-sm w-28 py-2 rounded cursor-pointer">
+                <i class="fa-solid fa-file-excel mr-1"></i> Export
+            </button>
+        </form> --}}
+
+        <button wire:click="export" class="bg-green-400 text-white text-sm w-28 py-2 rounded cursor-pointer">
+            <i class="fa-solid fa-file-excel mr-1"></i> Export
+        </button>
+
+
     </div>
     <div class="w-full flex flex-col md:flex-row mb-4 justify-between items-center gap-4">
-        <input type="search" wire:model.live.debounce.500ms="search" placeholder="Search PR Number, Project, or End User"
+        <input type="search" wire:model.live.debounce.500ms="search"
+            placeholder="Search PR Number, Project, or End User"
             class="w-full md:w-1/3 bg-gray-50 border border-gray-300 p-2 text-sm rounded focus:ring-blue-500 focus:border-blue-500">
 
         <div class="flex flex-col md:flex-row gap-2 w-full md:w-2/3 justify-end">
