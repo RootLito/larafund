@@ -4,12 +4,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TrackingController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
-Route::get('/home', function () {
-    return view('home');
+
+Route::get('/login', function () {
+    return view('auth.login');
 });
 
 
@@ -84,6 +82,11 @@ Route::get('/edit', [TrackingController::class, 'editProject'])->name('project.a
 
 //export
 Route::post('/tracking/export', [TrackingController::class, 'export'])->name('tracking.export');
+
+
+// main 
+Route::get('/', [TrackingController::class, 'main']);
+
 
 
 

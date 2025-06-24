@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use App\Models\ProcurementProject;
 use Illuminate\Support\Facades\DB;
-
-
 
 class TrackingController extends Controller
 {
@@ -259,10 +256,92 @@ class TrackingController extends Controller
     }
 
 
+    // public function calendar()
+    // {
+    //     $events = collect();
+
+    //     $projects = ProcurementProject::all();
+
+    //     foreach ($projects as $project) {
+    //         $getDates = fn($field) => collect(json_decode($project->$field ?? '[]', true))
+    //             ->filter(fn($d) => !is_null($d) && $d !== '')
+    //             ->values();
+
+    //         foreach ($getDates('philgeps_advertisement') as $date) {
+    //             $events->push([
+    //                 'title' => $project->procurement_project,
+    //                 'start' => $date,
+    //                 'color' => '#3182ce',
+    //                 'extendedProps' => [
+    //                     'end_user' => $project->end_user,
+    //                     'total_abc' => $project->total_abc,
+    //                     'event_type' => 'PhilGEPS Advertisement',
+    //                     'event_date' => $date,
+    //                 ],
+    //             ]);
+    //         }
+
+    //         foreach ($getDates('pre_bid_conference') as $date) {
+    //             $events->push([
+    //                 'title' => $project->procurement_project,
+    //                 'start' => $date,
+    //                 'color' => '#48bb78',
+    //                 'extendedProps' => [
+    //                     'end_user' => $project->end_user,
+    //                     'total_abc' => $project->total_abc,
+    //                     'event_type' => 'Pre-Bid Conference',
+    //                     'event_date' => $date,
+    //                 ],
+    //             ]);
+    //         }
+
+    //         foreach ($getDates('bid_opening') as $date) {
+    //             $events->push([
+    //                 'title' => $project->procurement_project,
+    //                 'start' => $date,
+    //                 'color' => '#ecc94b',
+    //                 'extendedProps' => [
+    //                     'end_user' => $project->end_user,
+    //                     'total_abc' => $project->total_abc,
+    //                     'event_type' => 'Bid Opening',
+    //                     'event_date' => $date,
+    //                 ],
+    //             ]);
+    //         }
+
+    //         foreach ($getDates('post_qualification') as $date) {
+    //             $events->push([
+    //                 'title' => $project->procurement_project,
+    //                 'start' => $date,
+    //                 'color' => '#f56565',
+    //                 'extendedProps' => [
+    //                     'end_user' => $project->end_user,
+    //                     'total_abc' => $project->total_abc,
+    //                     'event_type' => 'Post-Qua Report Presentation',
+    //                     'event_date' => $date,
+    //                 ],
+    //             ]);
+    //         }
+    //     }
+
+    //     return view('pages.calendar', ['events' => $events->values()]);
+    // }
     public function calendar()
     {
-        $events = collect();
+        $events = $this->getProcurementEvents();
+        return view('pages.calendar', ['events' => $events]);
+    }
 
+    public function main()
+    {
+        $events = $this->getProcurementEvents();
+        return view('main', ['events' => $events]);
+    }
+
+    // Shared logic to reduce duplication
+    private function getProcurementEvents()
+    {
+        $events = collect();
         $projects = ProcurementProject::all();
 
         foreach ($projects as $project) {
@@ -270,65 +349,32 @@ class TrackingController extends Controller
                 ->filter(fn($d) => !is_null($d) && $d !== '')
                 ->values();
 
-            foreach ($getDates('philgeps_advertisement') as $date) {
-                $events->push([
-                    'title' => $project->procurement_project,
-                    'start' => $date,
-                    'color' => '#3182ce',
-                    'extendedProps' => [
-                        'end_user' => $project->end_user,
-                        'total_abc' => $project->total_abc,
-                        'event_type' => 'PhilGEPS Advertisement',
-                        'event_date' => $date,
-                    ],
-                ]);
-            }
-
-            foreach ($getDates('pre_bid_conference') as $date) {
-                $events->push([
-                    'title' => $project->procurement_project,
-                    'start' => $date,
-                    'color' => '#48bb78',
-                    'extendedProps' => [
-                        'end_user' => $project->end_user,
-                        'total_abc' => $project->total_abc,
-                        'event_type' => 'Pre-Bid Conference',
-                        'event_date' => $date,
-                    ],
-                ]);
-            }
-
-            foreach ($getDates('bid_opening') as $date) {
-                $events->push([
-                    'title' => $project->procurement_project,
-                    'start' => $date,
-                    'color' => '#ecc94b',
-                    'extendedProps' => [
-                        'end_user' => $project->end_user,
-                        'total_abc' => $project->total_abc,
-                        'event_type' => 'Bid Opening',
-                        'event_date' => $date,
-                    ],
-                ]);
-            }
-
-            foreach ($getDates('post_qualification') as $date) {
-                $events->push([
-                    'title' => $project->procurement_project,
-                    'start' => $date,
-                    'color' => '#f56565',
-                    'extendedProps' => [
-                        'end_user' => $project->end_user,
-                        'total_abc' => $project->total_abc,
-                        'event_type' => 'Post-Qua Report Presentation',
-                        'event_date' => $date,
-                    ],
-                ]);
+            foreach ([
+                'philgeps_advertisement' => ['#3182ce', 'PhilGEPS Advertisement'],
+                'pre_bid_conference' => ['#48bb78', 'Pre-Bid Conference'],
+                'bid_opening' => ['#ecc94b', 'Bid Opening'],
+                'post_qualification' => ['#f56565', 'Post-Qua Report Presentation']
+            ] as $field => [$color, $eventType]) {
+                foreach ($getDates($field) as $date) {
+                    $events->push([
+                        'title' => $project->procurement_project,
+                        'start' => $date,
+                        'color' => $color,
+                        'extendedProps' => [
+                            'end_user' => $project->end_user,
+                            'total_abc' => $project->total_abc,
+                            'event_type' => $eventType,
+                            'event_date' => $date,
+                        ],
+                    ]);
+                }
             }
         }
 
-        return view('pages.calendar', ['events' => $events->values()]);
+        return $events->values();
     }
+
+
 
 
 
@@ -360,12 +406,4 @@ class TrackingController extends Controller
             'links' => (string) $projects->links(),
         ]);
     }
-
-
-
-
-
-
-
-
 }

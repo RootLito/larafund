@@ -113,6 +113,4 @@
         }
     </script>
 
-
-    <script></script>
 @endsection

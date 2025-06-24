@@ -1,14 +1,6 @@
 <div class="md:w-full h-full bg-white p-6 rounded-lg">
     <div class="w-full flex items-center justify-between mb-6 ">
         <h2 class="text-xl font-bold text-gray-700">PR Lists</h2>
-        {{-- <button class="bg-green-400 text-white text-sm w-28 py-2 rounded cursor-pointer"><i
-                class="fa-solid fa-file-excel mr-1"></i> Export</button> --}}
-        {{-- <form action="{{ route('tracking.export') }}" method="POST">
-            @csrf
-            <button type="submit" class="bg-green-400 text-white text-sm w-28 py-2 rounded cursor-pointer">
-                <i class="fa-solid fa-file-excel mr-1"></i> Export
-            </button>
-        </form> --}}
 
         <button wire:click="export" class="bg-green-400 text-white text-sm w-28 py-2 rounded cursor-pointer">
             <i class="fa-solid fa-file-excel mr-1"></i> Export
