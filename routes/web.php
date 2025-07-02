@@ -1,91 +1,45 @@
 <?php
-
+use App\Http\Middleware\AuthRedirect;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TrackingController;
 
-
-
-Route::get('/login', function () {
+// Unprotected: Publicly accessible
+Route::get('/', [TrackingController::class, 'main']); 
+Route::post('/login', [UserController::class, 'login'])->name('login');
+Route::get('/bac', function () {
     return view('auth.login');
 });
 
 
-Route::get('/dashboard', function () {
-    return view('layout.dashboard');
+// Group all protected routes
+Route::middleware([AuthRedirect::class])->group(function () {
+
+    //Tracking routes
+    Route::get('/dashboard', [TrackingController::class, 'dashboard'])->name('dashboard');
+    Route::get('/tracking', [TrackingController::class, 'records'])->name('tracking');
+    Route::get('/calendar', [TrackingController::class, 'calendar'])->name('calendar');
+    Route::post('/pr', [TrackingController::class, 'newpr']);
+    Route::put('/tracking/{id}', [TrackingController::class, 'update'])->name('tracking.update');
+    Route::delete('/tracking/{id}', [TrackingController::class, 'destroy'])->name('tracking.delete');
+    Route::get('/projects/search', [TrackingController::class, 'search'])->name('projects.search');
+    Route::get('/view', [TrackingController::class, 'viewProject'])->name('project.action.view');
+    Route::get('/edit', [TrackingController::class, 'editProject'])->name('project.action.edit');
+    Route::post('/tracking/export', [TrackingController::class, 'export'])->name('tracking.export');
+    Route::post('/logout', [UserController::class, 'logout'])->name('logout');
+
+    // User routes
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::post('/users/register', [UserController::class, 'register'])->name('users.register');
 });
 
 
-Route::get('/app', function () {
-    return view('layout.app');
-});
 
 
-Route::get('/dashboard', [TrackingController::class, 'dashboard'])->name('dashboard');
-Route::get('/tracking', [TrackingController::class, 'records'])->name('tracking');
-
-
-Route::get('/users', function () {
-    return view('pages.users');
-})->name('users');
-
-
-Route::get('/calendar', function () {
-    return view('pages.calendar');
-})->name('calendar');
-
-
-
-
-
-//USER CONTROLLER     
-Route::post('/register', [UserController::class, 'register']);
-Route::post('/login', [UserController::class, 'login']);
-Route::post('/logout', [UserController::class, 'logout']);
-
-
-
-
-//TRACKING CONTROLLER
-Route::post('/pr', [TrackingController::class, 'newpr']);
-Route::put('/tracking/{id}', [TrackingController::class, 'update'])->name('tracking.update');
-// Route::delete('/tracking/delete/{id}', [TrackingController::class, 'delete'])->name('tracking.delete');
-Route::delete('/tracking/{id}', [TrackingController::class, 'destroy'])->name('tracking.delete');
-
-
-
-//CALENDAR CONTROLLER
-Route::get('/calendar', [TrackingController::class, 'calendar'])->name('calendar');
-
-
-
-
-
-
-
-
-// Route::get('/tracking/search', [TrackingController::class, 'search'])->name('tracking.search');
-Route::get('/projects/search', [TrackingController::class, 'search'])->name('projects.search');
-
-
-
-Route::get('/action/edit', function () {
-    return view('pages.action.edit'); 
-})->name('action.edit');
-
-
-Route::get('/view', [TrackingController::class, 'viewProject'])->name('project.action.view');
-Route::get('/edit', [TrackingController::class, 'editProject'])->name('project.action.edit');
-
-
-
-
-//export
-Route::post('/tracking/export', [TrackingController::class, 'export'])->name('tracking.export');
-
-
-// main 
-Route::get('/', [TrackingController::class, 'main']);
 
 
 

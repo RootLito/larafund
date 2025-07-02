@@ -32,7 +32,7 @@
 </head>
 
 <body>
-    <div class="w-full h-screen bg-gray-200 flex flex-col sm:flex-row gap-10 p-10">
+    <div class="w-full h-screen bg-gray-200 flex flex-col sm:flex-row  gap-10 p-10">
         <div class="w-100 h-full bg-white p-10 rounded-lg flex flex-col items-center">
             <img src="{{ asset('images/bfar.png') }}" alt="" width="250" height="250">
             <h2 class="font-black my-7 text-2xl text-gray-700">BAC PR Tracking System</h2>
@@ -40,7 +40,7 @@
                 The BAC PR Tracking System is a platform for monitoring, managing, and streamlining Purchase Requests
                 within the Bids and Awards Committee process.
             </small>
-            <a href="/login"
+            <a href="/bac"
                 class="w-72 flex bg-red-400 justify-center items-center gap-2 h-10 text-sm text-white rounded-md hover:bg-red-500   transition-all mt-5">
                 <i class="fa-solid fa-right-to-bracket"></i>
                 Login

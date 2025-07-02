@@ -7,28 +7,33 @@
 
     <nav class="flex flex-col gap-2 mt-10">
         <a href="/dashboard"
-            class="flex bg-gray-100 items-center gap-2 h-10 text-sm text-gray-700 rounded-md hover:bg-gray-200 hover:text-gray-600 transition-all 
+            class="flex bg-gray-100 items-center gap-2 h-10 text-sm font-semibold text-gray-700 rounded-md hover:bg-gray-200 hover:text-gray-600 transition-all 
                   {{ request()->routeIs('dashboard') ? 'bg-gray-300 text-gray-700' : '' }}">
             <i class="fas fa-home-alt ml-5"></i>
             Dashboard
         </a>
 
         <a href="/tracking"
-            class="flex bg-gray-100 items-center gap-2 h-10 text-sm text-gray-700 rounded-md hover:bg-gray-200 hover:text-gray-600  transition-all 
+            class="flex bg-gray-100 items-center gap-2 h-10 font-semibold text-sm text-gray-700 rounded-md hover:bg-gray-200 hover:text-gray-600  transition-all 
                   {{ request()->routeIs('tracking') ? 'bg-gray-300 text-gray-700' : '' }}">
             <i class="fas fa-file ml-5"></i>
             Tracking
         </a>
 
-        {{-- <a href="/users"
-            class="flex bg-gray-100 items-center gap-2 h-10 text-sm text-gray-700 rounded-md hover:bg-gray-200 hover:text-gray-600  transition-all 
-                  {{ request()->routeIs('users') ? 'bg-gray-300 text-gray-700' : '' }}">
-            <i class="fas fa-user ml-5"></i>
-            Users
-        </a> --}}
+        @auth
+            @if (auth()->user()->role === 'admin')
+                <a href="/users"
+                    class="flex bg-gray-100 items-center gap-2 h-10 text-sm font-semibold text-gray-700 rounded-md hover:bg-gray-200 hover:text-gray-600 transition-all 
+                     {{ request()->is('users*') ? 'bg-gray-300 text-gray-700' : '' }}">
+                    <i class="fas fa-user ml-5"></i>
+                    Users
+                </a>
+            @endif
+        @endauth
+
 
         <a href="/calendar"
-            class="flex bg-gray-100 items-center gap-2 h-10 text-sm text-gray-700 rounded-md hover:bg-gray-200 hover:text-gray-600 transition-all 
+            class="flex bg-gray-100 items-center gap-2 h-10 text-sm font-semibold text-gray-700 rounded-md hover:bg-gray-200 hover:text-gray-600 transition-all 
                   {{ request()->routeIs('calendar') ? 'bg-gray-300 text-gray-700' : '' }}">
             <i class="fas fa-calendar ml-5"></i>
             Calendar
@@ -37,7 +42,8 @@
 
 
     <form action="/logout" method="post" class="mt-auto">
-        <div x-data="clock()" x-init="start()" id="clock" x-text="time" class="text-sm text-senter mb-5"></div>
+        <div x-data="clock()" x-init="start()" id="clock" x-text="time"
+            class="text-sm text-senter mb-5"></div>
 
         <script>
             function clock() {
@@ -63,6 +69,12 @@
                 }
             }
         </script>
-        <button class="bg-red-400 text-white font-bold text-sm rounded-md w-full h-10 cursor-pointer">Logout</button>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button type="submit"
+                class="bg-red-400 text-white font-bold text-sm rounded-md w-full h-10 cursor-pointer">
+                Logout
+            </button>
+        </form>
     </form>
 </div>

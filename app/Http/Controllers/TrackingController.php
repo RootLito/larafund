@@ -131,16 +131,7 @@ class TrackingController extends Controller
                 $validated[$field] = json_encode($validated[$field]);
             }
         }
-
-
-        // \DB::enableQueryLog();
-        // $procurementProject->update($validated);
-        // dd(\DB::getQueryLog());
-
-
         $procurementProject->update($validated);
-
-
         return redirect('/tracking')->with('success', 'Procurement project updated successfully!');
     }
 
@@ -406,4 +397,6 @@ class TrackingController extends Controller
             'links' => (string) $projects->links(),
         ]);
     }
+
+
 }
