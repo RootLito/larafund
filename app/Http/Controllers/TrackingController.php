@@ -14,7 +14,7 @@ class TrackingController extends Controller
     {
         $in = $request->validate([
             'procurement_project' => ['required', 'min:5'],
-            'mode_of_procurement' => ['required', 'min:5'],
+            'mode_of_procurement' => ['required', 'min:1'],
             'custom_mode' => ['nullable', 'string', 'min:3'],
             'lot_description' => ['required', 'min:1'],
             'abc_per_lot' => ['required', 'min:1'],
@@ -25,7 +25,14 @@ class TrackingController extends Controller
             $in['mode_of_procurement'] = $in['custom_mode'];
         }
         unset($in['custom_mode']);
-        $in['status'] = 'Pending';
+        // number of lots
+        $lotsCount = count($in['mode_of_procurement']);
+
+        // create statuses array
+        $statuses = array_fill(0, $lotsCount, 'Pending');
+
+        $in['status'] = json_encode($statuses);
+        $in['mode_of_procurement'] = json_encode($in['mode_of_procurement']);
         $in['lot_description'] = json_encode($in['lot_description']);
         $in['abc_per_lot'] = json_encode($in['abc_per_lot']);
         ProcurementProject::create($in);
@@ -72,9 +79,14 @@ class TrackingController extends Controller
         }, $request->all()));
 
         $validated = $request->validate([
-            'status' => 'nullable|string',
+            'status' => 'nullable|array',
+            'mode_of_procurement' => 'nullable|array',
+            'bid_status' => 'nullable|array',
+
+
+
+
             'procurement_project' => 'nullable|string',
-            'mode_of_procurement' => 'nullable|string',
             'lot_description' => 'nullable|array|min:1',
             'abc_per_lot' => 'nullable|array|min:1',
             'total_abc' => 'nullable|numeric',
@@ -108,6 +120,10 @@ class TrackingController extends Controller
 
         // JSON encode fields
         $fieldsToEncode = [
+            'status',
+            'mode_of_procurement',
+            'bid_status',
+
             'lot_description',
             'abc_per_lot',
             'philgeps_advertisement',
@@ -247,76 +263,6 @@ class TrackingController extends Controller
     }
 
 
-    // public function calendar()
-    // {
-    //     $events = collect();
-
-    //     $projects = ProcurementProject::all();
-
-    //     foreach ($projects as $project) {
-    //         $getDates = fn($field) => collect(json_decode($project->$field ?? '[]', true))
-    //             ->filter(fn($d) => !is_null($d) && $d !== '')
-    //             ->values();
-
-    //         foreach ($getDates('philgeps_advertisement') as $date) {
-    //             $events->push([
-    //                 'title' => $project->procurement_project,
-    //                 'start' => $date,
-    //                 'color' => '#3182ce',
-    //                 'extendedProps' => [
-    //                     'end_user' => $project->end_user,
-    //                     'total_abc' => $project->total_abc,
-    //                     'event_type' => 'PhilGEPS Advertisement',
-    //                     'event_date' => $date,
-    //                 ],
-    //             ]);
-    //         }
-
-    //         foreach ($getDates('pre_bid_conference') as $date) {
-    //             $events->push([
-    //                 'title' => $project->procurement_project,
-    //                 'start' => $date,
-    //                 'color' => '#48bb78',
-    //                 'extendedProps' => [
-    //                     'end_user' => $project->end_user,
-    //                     'total_abc' => $project->total_abc,
-    //                     'event_type' => 'Pre-Bid Conference',
-    //                     'event_date' => $date,
-    //                 ],
-    //             ]);
-    //         }
-
-    //         foreach ($getDates('bid_opening') as $date) {
-    //             $events->push([
-    //                 'title' => $project->procurement_project,
-    //                 'start' => $date,
-    //                 'color' => '#ecc94b',
-    //                 'extendedProps' => [
-    //                     'end_user' => $project->end_user,
-    //                     'total_abc' => $project->total_abc,
-    //                     'event_type' => 'Bid Opening',
-    //                     'event_date' => $date,
-    //                 ],
-    //             ]);
-    //         }
-
-    //         foreach ($getDates('post_qualification') as $date) {
-    //             $events->push([
-    //                 'title' => $project->procurement_project,
-    //                 'start' => $date,
-    //                 'color' => '#f56565',
-    //                 'extendedProps' => [
-    //                     'end_user' => $project->end_user,
-    //                     'total_abc' => $project->total_abc,
-    //                     'event_type' => 'Post-Qua Report Presentation',
-    //                     'event_date' => $date,
-    //                 ],
-    //             ]);
-    //         }
-    //     }
-
-    //     return view('pages.calendar', ['events' => $events->values()]);
-    // }
     public function calendar()
     {
         $events = $this->getProcurementEvents();
@@ -329,7 +275,6 @@ class TrackingController extends Controller
         return view('main', ['events' => $events]);
     }
 
-    // Shared logic to reduce duplication
     private function getProcurementEvents()
     {
         $events = collect();
@@ -339,6 +284,24 @@ class TrackingController extends Controller
             $getDates = fn($field) => collect(json_decode($project->$field ?? '[]', true))
                 ->filter(fn($d) => !is_null($d) && $d !== '')
                 ->values();
+
+
+            $bidStatuses = json_decode($project->bid_status ?? '[]', true);
+            $remarks = json_decode($project->remarks ?? '[]', true);
+            $lotDescriptions = json_decode($project->lot_description ?? '[]', true);
+
+            $lots = [];
+            $count = max(count($bidStatuses), count($remarks), count($lotDescriptions));
+            for ($i = 0; $i < $count; $i++) {
+                $lots[] = [
+                    'lot_name' => $lotDescriptions[$i] ?? '',  
+                    'bid_status' => $bidStatuses[$i] ?? '',
+                    'remarks' => $remarks[$i] ?? '',
+                ];
+            }
+
+
+
 
             foreach ([
                 'philgeps_advertisement' => ['#3182ce', 'PhilGEPS Advertisement'],
@@ -356,6 +319,7 @@ class TrackingController extends Controller
                             'total_abc' => $project->total_abc,
                             'event_type' => $eventType,
                             'event_date' => $date,
+                            'lots' => $lots,
                         ],
                     ]);
                 }
@@ -364,10 +328,6 @@ class TrackingController extends Controller
 
         return $events->values();
     }
-
-
-
-
 
     public function search(Request $request)
     {

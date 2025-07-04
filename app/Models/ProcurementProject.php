@@ -15,6 +15,7 @@ class ProcurementProject extends Model
         'status',
         'procurement_project',
         'mode_of_procurement',
+        'bid_status',
         'custom_mode',
         'lot_description',
         'abc_per_lot',
@@ -43,7 +44,5 @@ class ProcurementProject extends Model
         'date_forwarded_to_gss',
         'remarks',
     ];
-
-    
 
 }

@@ -52,28 +52,15 @@
 
             <form action="/pr" method="post">
                 @csrf
-
-
-                <small>Mode of Procurement<span class="text-red-500">*</span></small>
-                <select name="mode_of_procurement" id="mode_of_procurement"
-                    class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded mb-2">
-                    <option value="" selected disabled>Select Mode of Procurement</option>
-                    <option value="Public Bidding">Public Bidding</option>
-                    <option value="Direct Contracting">Direct Contracting</option>
-                    <option value="Small Value Procurement">Small Value Procurement</option>
-                    <option value="Emergency Cases">Emergency Cases</option>
-                    <option value="others">Others</option>
-                </select>
-
-                <input type="text" name="custom_mode" placeholder="Please specify" id="custom_mode_input"
-                    class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded mb-2 hidden" />
-
-
                 <small>Procurement Project <span class="text-red-500">*</span></small>
                 <textarea name="procurement_project"
                     class="w-full h-20 p-2 border bg-gray-50 border-gray-300 rounded resize-none text-sm"></textarea>
 
-                <div class="flex gap-2 items-end mt-1">
+                <div class="flex gap-2 items-end mt-3">
+                    <div class="flex flex-col w-96">
+                        <small>Mode of Procurement<span class="text-red-500">*</span></small>
+                    </div>
+
                     <div class="flex flex-col flex-1">
                         <small>Lot and Description <span class="text-red-500">*</span></small>
                     </div>
@@ -84,6 +71,18 @@
 
                 <template x-for="(lot, index) in lots" :key="index">
                     <div class="flex gap-2 items-end mt-1">
+                        <div class="flex flex-col w-72">
+                            <select :name="'mode_of_procurement[]'" x-model="lot.mode_of_procurement"
+                                :id="'mode_of_procurement_' + index"
+                                class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded">
+                                <option value="" selected disabled>Select Mode of Procurement</option>
+                                <option value="Public Bidding">Public Bidding</option>
+                                <option value="Direct Contracting">Direct Contracting</option>
+                                <option value="Small Value Procurement">Small Value Procurement</option>
+                                <option value="Emergency Cases">Emergency Cases</option>
+                                <option value="others">Others</option>
+                            </select>
+                        </div>
                         <div class="flex flex-col flex-1">
                             <input type="text" :name="'lot_description[]'" x-model="lot.description"
                                 class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
@@ -96,6 +95,8 @@
                                 :id="'abc_per_lot_' + index">
                         </div>
                     </div>
+
+                    
                 </template>
 
                 <div class="flex gap-2 items-end mt-3">
@@ -135,6 +136,6 @@
         }
 
         select.addEventListener('change', toggleInput);
-        toggleInput(); 
+        toggleInput();
     });
 </script>

@@ -31,7 +31,7 @@
 
                             <div class="flex gap-2 items-end mb-3">
 
-                                <div class="flex flex-col flex-1">
+                                {{-- <div class="flex flex-col flex-1">
                                     <small>Status <span class="text-red-500">*</span></small>
                                     <select name="status" id="status"
                                         class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded">
@@ -56,32 +56,31 @@
                                         </option>
                                     </select>
 
-                                </div>
+                                </div> --}}
 
                                 <div class="flex flex-col w-72">
-                                    <small>PR Number <span class="text-red-500">*</span></small>
+                                    <small>PR Number </small>
                                     <input type="text" name="pr_number"
                                         class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
                                         value="{{ old('pr_number', $editProject->pr_number) }}">
                                 </div>
                             </div>
 
-                            <small>Mode of Procurement<span class="text-red-500">*</span></small>
-
-
-
-
-                            <input type="text" name="mode_of_procurement" placeholder="Please specify"
+                            {{-- <input type="text" name="mode_of_procurement" placeholder="Please specify"
                                 class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded mb-2"
-                                value="{{ $editProject->mode_of_procurement }}" />
+                                value="{{ $editProject->mode_of_procurement }}" /> --}}
 
 
-                            <small>Procurement Project <span class="text-red-500">*</span></small>
+                            <small>Procurement Project </small>
                             <textarea type="text" name="procurement_project"
                                 class="w-full h-20 p-2 border bg-gray-50 border-gray-300 rounded resize-none text-sm">{{ $editProject->procurement_project }}
-                        </textarea>
+                            </textarea>
+
 
                             @php
+                                $statuses = json_decode($editProject->status, true);
+                                $modeOfProcurement = json_decode($editProject->mode_of_procurement, true);
+                                $bidStatuses = json_decode($editProject->bid_status, true);
                                 $lotDescriptions = json_decode($editProject->lot_description, true);
                                 $abcPerLots = json_decode($editProject->abc_per_lot, true);
                                 $philgeps_advertisement = json_decode($editProject->philgeps_advertisement, true);
@@ -110,62 +109,125 @@
                                 <table class="w-full mt-2">
                                     <tr>
                                         <td class="whitespace-nowrap">
-                                            <small>Lot and Description <span class="text-red-500">*</span></small>
+                                            <small>Status</small>
                                         </td>
                                         <td class="whitespace-nowrap">
-                                            <small>ABC per LOT <span class="text-red-500">*</span></small>
+                                            <small>Mode of Procurement</small>
                                         </td>
                                         <td class="whitespace-nowrap">
-                                            <small>PhilGEPS Advertisement <span class="text-red-500">*</span></small>
+                                            <small>Bid Status</small>
+                                        </td>
+
+
+
+
+
+
+                                        <td class="whitespace-nowrap">
+                                            <small>Lot and Description </small>
                                         </td>
                                         <td class="whitespace-nowrap">
-                                            <small>PhilGEPS Posting Date <span class="text-red-500">*</span></small>
+                                            <small>ABC per LOT </small>
                                         </td>
                                         <td class="whitespace-nowrap">
-                                            <small>RFQ/ITB Number <span class="text-red-500">*</span></small>
+                                            <small>PhilGEPS Advertisement </small>
                                         </td>
                                         <td class="whitespace-nowrap">
-                                            <small>Pre Bid Conference<span class="text-red-500">*</span></small>
+                                            <small>PhilGEPS Posting Date </small>
                                         </td>
                                         <td class="whitespace-nowrap">
-                                            <small>Bid Opening <span class="text-red-500">*</span></small>
+                                            <small>RFQ/ITB Number </small>
                                         </td>
                                         <td class="whitespace-nowrap">
-                                            <small>Post Qualification Presentation<span
-                                                    class="text-red-500">*</span></small>
+                                            <small>Pre Bid Conference</small>
                                         </td>
                                         <td class="whitespace-nowrap">
-                                            <small>SQ Number <span class="text-red-500">*</span></small>
+                                            <small>Bid Opening </small>
                                         </td>
                                         <td class="whitespace-nowrap">
-                                            <small>BAC Res. Number <span class="text-red-500">*</span></small>
+                                            <small>Post Qualification Presentation</small>
                                         </td>
                                         <td class="whitespace-nowrap">
-                                            <small>Date of BAC Res. Completely Signed <span
-                                                    class="text-red-500">*</span></small>
+                                            <small>SQ Number </small>
                                         </td>
                                         <td class="whitespace-nowrap">
-                                            <small>NOA No. <span class="text-red-500">*</span></small>
+                                            <small>BAC Res. Number </small>
                                         </td>
                                         <td class="whitespace-nowrap">
-                                            <small>Canvasser <span class="text-red-500">*</span></small>
+                                            <small>Date of BAC Res. Completely Signed</small>
                                         </td>
                                         <td class="whitespace-nowrap">
-                                            <small>Name of Supplier <span class="text-red-500">*</span></small>
+                                            <small>NOA No. </small>
                                         </td>
                                         <td class="whitespace-nowrap">
-                                            <small>Contract Price <span class="text-red-500">*</span></small>
+                                            <small>Canvasser </small>
                                         </td>
                                         <td class="whitespace-nowrap">
-                                            <small>Date Forwarded to GSS <span class="text-red-500">*</span></small>
+                                            <small>Name of Supplier </small>
                                         </td>
                                         <td class="whitespace-nowrap">
-                                            <small>Remarks <span class="text-red-500">*</span></small>
+                                            <small>Contract Price </small>
+                                        </td>
+                                        <td class="whitespace-nowrap">
+                                            <small>Date Forwarded to GSS </small>
+                                        </td>
+                                        <td class="whitespace-nowrap">
+                                            <small>Remarks </small>
                                         </td>
                                     </tr>
                                     @if (is_array($lotDescriptions) && is_array($abcPerLots))
                                         @foreach ($lotDescriptions as $index => $lotDescription)
                                             <tr>
+                                                <td class="whitespace-nowrap pr-1">
+                                                    <select name="status[]"
+                                                        class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                        :id="'status_' + {{ $index }}">
+                                                        <option value="Pending"
+                                                            {{ old('status.' . $index, $statuses[$index] ?? '') == 'Pending' ? 'selected' : '' }}>
+                                                            Pending</option>
+                                                        <option value="Completed"
+                                                            {{ old('status.' . $index, $statuses[$index] ?? '') == 'Completed' ? 'selected' : '' }}>
+                                                            Completed</option>
+                                                        <option value="In Progress"
+                                                            {{ old('status.' . $index, $statuses[$index] ?? '') == 'In Progress' ? 'selected' : '' }}>
+                                                            In Progress</option>
+                                                        <option value="Reimbursement"
+                                                            {{ old('status.' . $index, $statuses[$index] ?? '') == 'Reimbursement' ? 'selected' : '' }}>
+                                                            Reimbursement</option>
+                                                        <option value="Cancelled"
+                                                            {{ old('status.' . $index, $statuses[$index] ?? '') == 'Cancelled' ? 'selected' : '' }}>
+                                                            Cancelled</option>
+                                                    </select>
+                                                </td>
+
+
+                                                <td class="whitespace-nowrap pr-1">
+                                                    <input type="text" name="mode_of_procurement[]"
+                                                        class="w-[250px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                        :id="'mode_of_procurement_' + {{ $index }}"
+                                                        value="{{ old('mode_of_procurement.' . $index, $modeOfProcurement[$index] ?? '') }}">
+                                                </td>
+
+                                                <td class="whitespace-nowrap pr-1">
+                                                    <select name="bid_status[]"
+                                                        class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                        id="bid_status_{{ $index }}">
+                                                        <option value="" disabled
+                                                            {{ old('bid_status.' . $index, $bidStatuses[$index] ?? '') == '' ? 'selected' : '' }}>
+                                                            - Select Status -
+                                                        </option>
+                                                        <option value="Re-Open"
+                                                            {{ old('bid_status.' . $index, $bidStatuses[$index] ?? '') == 'Re-Open' ? 'selected' : '' }}>
+                                                            Re-Open</option>
+                                                        <option value="Re-Bid"
+                                                            {{ old('bid_status.' . $index, $bidStatuses[$index] ?? '') == 'Re-Bid' ? 'selected' : '' }}>
+                                                            Re-Bid</option>
+                                                        <option value="Negotiated"
+                                                            {{ old('bid_status.' . $index, $bidStatuses[$index] ?? '') == 'Negotiated' ? 'selected' : '' }}>
+                                                            Negotiated</option>
+                                                    </select>
+                                                </td>
+
                                                 <td class="whitespace-nowrap py-1 pr-1">
                                                     <input type="text" name="lot_description[]"
                                                         class=" bg-gray-50 border border-gray-300 p-2 text-sm rounded w-[500px]"
@@ -231,7 +293,7 @@
 
                                                 <td class="whitespace-nowrap pr-1">
                                                     <input type="date" name="post_qualification[]"
-                                                        class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                        class="w-[200px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
                                                         id="post_qualification_{{ $index }}"
                                                         value="{{ old('post_qualification.' . $index, $post_qualification[$index] ?? '') }}">
                                                 </td>
@@ -299,7 +361,7 @@
 
                                                 <td class="whitespace-nowrap pr-1">
                                                     <input type="text" name="remarks[]"
-                                                        class="w-[150px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
+                                                        class="w-[350px] bg-gray-50 border border-gray-300 p-2 text-sm rounded"
                                                         id="remarks_{{ $index }}"
                                                         value="{{ old('remarks.' . $index, $remarks[$index] ?? '') }}">
                                                 </td>
@@ -313,13 +375,13 @@
                             </div>
                             <div class="flex gap-2 items-end mt-5">
                                 <div class="flex flex-col flex-1">
-                                    <small>End User <span class="text-red-500">*</span></small>
+                                    <small>End User </small>
                                     <input type="text" name="end_user"
                                         class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
                                         value="{{ old('end_user', $editProject->end_user ?? '') }}">
                                 </div>
                                 <div class="flex flex-col w-72">
-                                    <small>Total ABC <span class="text-red-500">*</span></small>
+                                    <small>Total ABC </small>
                                     <input type="text" name="total_abc"
                                         class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
                                         value="{{ old('total_abc', $editProject->total_abc ?? '') }}" disabled>
@@ -328,7 +390,7 @@
 
                             <div class="flex gap-2 items-end mt-3">
                                 <div class="flex flex-col flex-1">
-                                    <small>Approved APP <span class="text-red-500">*</span></small>
+                                    <small>Approved APP </small>
                                     <select name="approved_app"
                                         class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded">
                                         <option value="" disabled
@@ -337,16 +399,16 @@
                                         </option>
                                         <option value="Pending"
                                             {{ old('approved_app', $editProject->approved_app ?? '') === 'Pending' ? 'selected' : '' }}>
-                                            PENDING
+                                            Pending
                                         </option>
                                         <option value="APP Approved"
                                             {{ old('approved_app', $editProject->approved_app ?? '') === 'APP Approved' ? 'selected' : '' }}>
-                                            APP APPROVED
+                                            APP Approved
                                         </option>
                                     </select>
                                 </div>
                                 <div class="flex flex-col w-72">
-                                    <small>Date Received from Planning <span class="text-red-500">*</span></small>
+                                    <small>Date Received from Planning </small>
                                     <input type="date" name="date_received_from_planning"
                                         class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
                                         value="{{ old('date_received_from_planning', $editProject->date_received_from_planning ?? '') }}">
@@ -355,13 +417,13 @@
 
                             <div class="flex gap-2 items-end mt-3">
                                 <div class="flex flex-col flex-1">
-                                    <small>TWG<span class="text-red-500">*</span></small>
+                                    <small>TWG</small>
                                     <input type="text" name="twg"
                                         class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
                                         value="{{ old('twg', $editProject->twg ?? '') }}">
                                 </div>
                                 <div class="flex flex-col w-72">
-                                    <small>Date Received by the TWG<span class="text-red-500">*</span></small>
+                                    <small>Date Received by the TWG</small>
                                     <input type="date" name="date_received_by_twg"
                                         class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
                                         value="{{ old('date_received_by_twg', $editProject->date_received_by_twg ?? '') }}">
@@ -370,14 +432,14 @@
 
                             <div class="flex gap-2 items-end mt-3">
                                 <div class="flex flex-col flex-1">
-                                    <small>Approved PR Received<span class="text-red-500">*</span></small>
+                                    <small>Approved PR Received</small>
                                     <input type="date" name="approved_pr_received"
                                         class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
                                         value="{{ old('approved_pr_received', $editProject->approved_pr_received ?? '') }}">
                                 </div>
 
                                 <div class="flex flex-col w-72">
-                                    <small>Date Forwarded to Budget<span class="text-red-500">*</span></small>
+                                    <small>Date Forwarded to Budget</small>
                                     <input type="date" name="date_forwarded_to_budget"
                                         class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
                                         value="{{ old('date_forwarded_to_budget', $editProject->date_forwarded_to_budget ?? '') }}">

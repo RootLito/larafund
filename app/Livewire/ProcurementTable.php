@@ -33,6 +33,9 @@ class ProcurementTable extends Component
         $this->resetPage();
     }
 
+
+
+
     public function render()
     {
         $projects = ProcurementProject::query()
@@ -61,10 +64,11 @@ class ProcurementTable extends Component
                 }
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(5);
+            ->paginate(5)->onEachSide(1);
 
         return view('livewire.procurement-table', compact('projects'));
     }
+
 
 
 
@@ -80,7 +84,6 @@ class ProcurementTable extends Component
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // Define headers in the new desired order
         $headers = [
             'Status',
             'Procurement Project',
