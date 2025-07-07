@@ -266,6 +266,13 @@ class TrackingController extends Controller
             }
             return false;
         })->count();
+        // New variable with all upcoming dates (Carbon instances), unique and sorted
+        $upcomingDates = ProcurementProject::all()->flatMap(function ($project) use ($today, $inSevenDays) {
+            $dates = json_decode($project->post_qualification, true) ?: [];
+            return collect($dates)
+                ->filter(fn($date) => $date && Carbon::parse($date)->between($today, $inSevenDays))
+                ->map(fn($date) => Carbon::parse($date));
+        })->unique()->sort()->values();
 
 
         return view('pages.dashboard', [
@@ -284,8 +291,42 @@ class TrackingController extends Controller
             'endUserGrouped' => $endUserGrouped,
             'pendingProjectsDetails' => $pendingProjectsDetails,
             'upcomingPostQualificationCount' => $upcomingCount,
+            'upcomingPostQualificationDates' => $upcomingDates,
         ]);
     }
+
+
+
+    public function reminders()
+{
+    $today = Carbon::today();
+    $inSevenDays = $today->copy()->addDays(7);
+
+    $reminders = collect();
+
+    foreach (ProcurementProject::all() as $project) {
+        $dates = json_decode($project->post_qualification, true) ?: [];
+        $lotDescriptions = json_decode($project->lot_description, true) ?: [];
+
+        foreach ($dates as $index => $date) {
+            if ($date && Carbon::parse($date)->between($today, $inSevenDays)) {
+                $reminders->push([
+                    'project' => $project->procurement_project,
+                    'date' => Carbon::parse($date)->format('F j, Y'),
+                    'lot_description' => $lotDescriptions[$index] ?? 'No Description',
+                ]);
+            }
+        }
+    }
+
+    return view('pages.post-qua', [
+        'upcomingReminders' => $reminders->sortBy('date')->values(),
+    ]);
+}
+
+
+
+
 
 
     public function calendar()

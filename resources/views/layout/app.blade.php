@@ -22,7 +22,11 @@
             @include('partials.sidebar')
 
             <div class="flex-1 flex flex-col">
-                @include('partials.navbar',['upcomingCount' => $upcomingPostQualificationCount ?? 0])
+                @include('partials.navbar', [
+                    'upcomingCount' => $upcomingPostQualificationCount ?? 0,
+                    'upcomingDates' => $upcomingPostQualificationDates ?? collect(),
+                ])
+
                 @yield('content')
             </div>
         </div>

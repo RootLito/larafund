@@ -4,14 +4,12 @@
         <h2 class="text-lg font-bold text-gray-700">BAC PR TRACKING SYSTEM</h2>
     </div>
 
-    <div class="flex gap-2 items-center">
+    <div class="flex gap-5 items-center">
         <h2>{{ auth()->user()->name }}</h2>
 
         <div x-data="{ open: false }" class="relative">
-            <!-- Bell Icon -->
             <i @click="open = !open" class="fa-solid fa-bell text-2xl cursor-pointer text-gray-600"></i>
 
-            <!-- Notification Count Badge -->
             @if ($upcomingCount > 0)
                 <span
                     class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
@@ -21,25 +19,42 @@
 
 
 
-            <!-- Notification Dropdown -->
             <div x-show="open" @click.outside="open = false" x-transition
-                class="absolute right-0 mt-5 w-64 bg-white border border-gray-200 rounded z-50">
-                <div class="p-4 text-gray-700 font-semibold border-b">Notifications</div>
-                <ul class="max-h-60 overflow-y-auto">
-                    {{-- @forelse($upcomingNotifications as $notification)
-                        <li class="px-4 py-2 hover:bg-gray-100 text-sm text-gray-800">
-                            {{ $notification->title }}
-                        </li>
-                    @empty
-                        <li class="px-4 py-2 text-sm text-gray-500">No new notifications</li>
-                    @endforelse --}}
-                </ul>
+                class="absolute right-0 mt-5 w-64 bg-white border border-gray-200 rounded-lg z-50">
+                <div class="p-4 text-gray-700 font-semibold border-b border-gray-300">Reminders</div>
+                <div class="p-4 text-sm text-gray-700 border-b border-gray-300">
+                    You have <strong>{{ $upcomingCount }}</strong> upcoming Post Qualification Presentation(s).
+                    @php
+                        $groupedDates = $upcomingDates
+                            ->groupBy(fn($date) => $date->format('F j, Y'))
+                            ->map(fn($group) => $group->count());
+                    @endphp
+                    @if ($groupedDates->isNotEmpty())
+                        <div class="py-2 text-sm text-gray-600">
+                            <strong>Dates:</strong>
+                            <ul class="list-disc list-inside mt-1 max-h-40 overflow-y-auto">
+                                @foreach ($groupedDates as $dateString => $count)
+                                    <li>
+                                        {{ $dateString }}
+                                        @if ($count > 1)
+                                            <span class="text-gray-500">x{{ $count }}</span>
+                                        @endif
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+                </div>
+
+
+
 
                 <div class="w-full">
-                    <button
-                        class="cursor-pointer w-full bg-gray-100 text-gray-600 text-sm py-2 font-semibold hover:bg-gray-200 focus:outline-none rounded-b-md">
+                    <a href="/dashboard/reminders"
+                        class="block text-center w-full bg-gray-100 text-gray-600 text-sm py-2 font-semibold hover:bg-gray-200 focus:outline-none rounded-b-md">
                         View All
-                    </button>
+                    </a>
+
                 </div>
             </div>
         </div>

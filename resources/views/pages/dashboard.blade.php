@@ -3,7 +3,7 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <div class="flex-1 h-full flex gap-6 p-10 bg-gray-200">
+    <div class="flex-1 h-full flex gap-6 p-10 bg-gray-200 relative">
         <div class="flex flex-1 flex-col gap-6">
             <div class="flex gap-6">
                 <div class="flex flex-col flex-1 bg-white p-4 rounded-xl h-36">
@@ -134,6 +134,35 @@
             </div>
 
 
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+        <!-- Floating Modal -->
+        <div x-data="{ open: true }" x-show="open" x-transition
+            class="fixed bottom-12 right-12 w-80 bg-red-400 shadow-lg rounded-lg border border-red-300 z-50"
+            style="display: none;">
+            <div class="flex justify-between items-center p-4 border-b border-red-300">
+
+                <h3 class="text-lg  text-white"><i class="fa-solid fa-clipboard text-lg mr-1"></i>
+                    Reminder</h3>
+                <button @click="open = false"
+                    class="text-white hover:text-gray-200 focus:outline-none text-xl cursor-pointer"
+                    aria-label="Close modal">
+                    &times;
+                </button>
+            </div>
+            <div class="p-4  text-white text-sm">
+                You have 4 upcoming Post Qualification Presentation(s).
+            </div>
         </div>
     </div>
     <div class="modal micromodal-slide" id="modal-pending" aria-hidden="true">

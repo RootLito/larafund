@@ -8,7 +8,7 @@
     <nav class="flex flex-col gap-2 mt-10">
         <a href="/dashboard"
             class="flex bg-gray-100 items-center gap-2 h-10 text-sm font-semibold text-gray-700 rounded-md hover:bg-gray-200 hover:text-gray-600 transition-all 
-                  {{ request()->routeIs('dashboard') ? 'bg-gray-300 text-gray-700' : '' }}">
+                  {{ request()->is('dashboard*') ? 'bg-gray-300 text-gray-700' : '' }}">
             <i class="fas fa-home-alt ml-5"></i>
             Dashboard
         </a>
