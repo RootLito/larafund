@@ -39,34 +39,58 @@ class ProcurementTable extends Component
     public function render()
     {
         $projects = ProcurementProject::query()
-            ->when(
-                $this->search,
-                fn($query) =>
-                $query->where('pr_number', 'like', "%{$this->search}%")
-                    ->orWhere('procurement_project', 'like', "%{$this->search}%")
-                    ->orWhere('end_user', 'like', "%{$this->search}%")
-            )
-            ->when(
-                $this->status,
-                fn($query) =>
-                $query->where('status', $this->status)
-            )
-            ->when($this->mode, function ($query) {
-                if ($this->mode === 'others') {
-                    $query->whereNotIn('mode_of_procurement', [
-                        'Public Bidding',
-                        'Direct Contracting',
-                        'Small Value Procurement',
-                        'Emergency Cases',
-                    ]);
+            ->when($this->search, function ($query) {
+                $query->where(function ($q) {
+                    $q->where('pr_number', 'like', "%{$this->search}%")
+                        ->orWhere('procurement_project', 'like', "%{$this->search}%")
+                        ->orWhere('end_user', 'like', "%{$this->search}%");
+                });
+            })
+            ->when($this->status, function ($query) {
+                if (is_array($this->status)) {
+                    $query->where(function ($q) {
+                        foreach ($this->status as $status) {
+                            $q->orWhereJsonContains('status', $status);
+                        }
+                    });
                 } else {
-                    $query->where('mode_of_procurement', $this->mode);
+                    $query->whereJsonContains('status', $this->status);
                 }
             })
+            ->when($this->mode, function ($query) {
+                if ($this->mode === 'others') {
+                    $query->where(function ($q) {
+                        $q->whereNull('mode_of_procurement')
+                            ->orWhere('mode_of_procurement', '')
+                            ->orWhere(function ($sub) {
+                                $sub->whereRaw('NOT JSON_CONTAINS(mode_of_procurement, ?)', ['"Public Bidding"'])
+                                    ->whereRaw('NOT JSON_CONTAINS(mode_of_procurement, ?)', ['"Direct Contracting"'])
+                                    ->whereRaw('NOT JSON_CONTAINS(mode_of_procurement, ?)', ['"Small Value Procurement"'])
+                                    ->whereRaw('NOT JSON_CONTAINS(mode_of_procurement, ?)', ['"Emergency Cases"']);
+                            });
+                    });
+                } elseif ($this->mode === 'Public Bidding') {
+                    $query->whereJsonContains('mode_of_procurement', 'Public Bidding')
+                        ->whereRaw("
+                NOT JSON_CONTAINS(mode_of_procurement, '\"Direct Contracting\"')
+                AND NOT JSON_CONTAINS(mode_of_procurement, '\"Small Value Procurement\"')
+                AND NOT JSON_CONTAINS(mode_of_procurement, '\"Emergency Cases\"')
+            ");
+                } else {
+                    $query->whereJsonContains('mode_of_procurement', $this->mode);
+                }
+            })
+
             ->orderBy('created_at', 'desc')
-            ->paginate(5)->onEachSide(1);
+            ->paginate(5)
+            ->onEachSide(1);
+
+
+            
 
         return view('livewire.procurement-table', compact('projects'));
+
+
     }
 
 

@@ -22,7 +22,7 @@
             @include('partials.sidebar')
 
             <div class="flex-1 flex flex-col">
-                @include('partials.navbar')
+                @include('partials.navbar',['upcomingCount' => $upcomingPostQualificationCount ?? 0])
                 @yield('content')
             </div>
         </div>

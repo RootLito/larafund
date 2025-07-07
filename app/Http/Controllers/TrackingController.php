@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\ProcurementProject;
 use Illuminate\Support\Facades\DB;
@@ -25,10 +26,8 @@ class TrackingController extends Controller
             $in['mode_of_procurement'] = $in['custom_mode'];
         }
         unset($in['custom_mode']);
-        // number of lots
         $lotsCount = count($in['mode_of_procurement']);
 
-        // create statuses array
         $statuses = array_fill(0, $lotsCount, 'Pending');
 
         $in['status'] = json_encode($statuses);
@@ -193,37 +192,50 @@ class TrackingController extends Controller
         $statuses = ['Pending', 'Completed', 'In Progress', 'Reimbursement', 'Cancelled'];
         $statusCounts = [];
         foreach ($statuses as $status) {
-            $statusCounts[] = ProcurementProject::where('status', $status)->count();
+            $statusCounts[] = ProcurementProject::whereJsonContains('status', $status)->count();
         }
-        $totalCount = array_sum($statusCounts);
-        $publicBiddingCount = ProcurementProject::where('mode_of_procurement', 'Public Bidding')->count();
-        $directContractingCount = ProcurementProject::where('mode_of_procurement', 'Direct Contracting')->count();
-        $smallValueProcurementCount = ProcurementProject::where('mode_of_procurement', 'Small Value Procurement')->count();
-        $emergencyCasesCount = ProcurementProject::where('mode_of_procurement', 'Emergency Cases')->count();
+
+        $totalCount = ProcurementProject::count();
+
+        $publicBiddingCount = ProcurementProject::whereJsonContains('mode_of_procurement', 'Public Bidding')->count();
+        $directContractingCount = ProcurementProject::whereJsonContains('mode_of_procurement', 'Direct Contracting')->count();
+        $smallValueProcurementCount = ProcurementProject::whereJsonContains('mode_of_procurement', 'Small Value Procurement')->count();
+        $emergencyCasesCount = ProcurementProject::whereJsonContains('mode_of_procurement', 'Emergency Cases')->count();
+
         $totalAmount = ProcurementProject::sum('total_abc');
+
         $prAbove50kCount = ProcurementProject::where('total_abc', '>', 50000)->count();
         $prBelow50kCount = ProcurementProject::where('total_abc', '<=', 50000)->count();
+
         $othersCount = ProcurementProject::where(function ($query) {
             $query->whereNull('mode_of_procurement')
                 ->orWhere('mode_of_procurement', '')
-                ->orWhereNotIn('mode_of_procurement', [
-                    'Public Bidding',
-                    'Direct Contracting',
-                    'Small Value Procurement',
-                    'Emergency Cases',
-                ]);
+                ->orWhere(function ($subQuery) {
+                    $subQuery->whereRaw('NOT JSON_CONTAINS(mode_of_procurement, ?)', ['"Public Bidding"'])
+                        ->whereRaw('NOT JSON_CONTAINS(mode_of_procurement, ?)', ['"Direct Contracting"'])
+                        ->whereRaw('NOT JSON_CONTAINS(mode_of_procurement, ?)', ['"Small Value Procurement"'])
+                        ->whereRaw('NOT JSON_CONTAINS(mode_of_procurement, ?)', ['"Emergency Cases"']);
+                });
         })->count();
+
         $othersGrouped = ProcurementProject::select('mode_of_procurement', DB::raw('count(*) as total'))
-            ->whereNotIn('mode_of_procurement', [
-                'Public Bidding',
-                'Direct Contracting',
-                'Small Value Procurement',
-                'Emergency Cases',
-            ])
             ->whereNotNull('mode_of_procurement')
             ->where('mode_of_procurement', '<>', '')
+            ->whereRaw('
+        NOT JSON_CONTAINS(mode_of_procurement, ?)
+        AND NOT JSON_CONTAINS(mode_of_procurement, ?)
+        AND NOT JSON_CONTAINS(mode_of_procurement, ?)
+        AND NOT JSON_CONTAINS(mode_of_procurement, ?)
+    ', [
+                '"Public Bidding"',
+                '"Direct Contracting"',
+                '"Small Value Procurement"',
+                '"Emergency Cases"'
+            ])
             ->groupBy('mode_of_procurement')
             ->get();
+
+
         $endUserGrouped = ProcurementProject::select('end_user', DB::raw('SUM(total_abc) as total'))
             ->whereNotNull('end_user')
             ->where('end_user', '<>', '')
@@ -241,7 +253,19 @@ class TrackingController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        // Add your upcoming post_qualification reminder count here
+        $today = Carbon::today();
+        $inSevenDays = Carbon::today()->addDays(7);
 
+        $upcomingCount = ProcurementProject::all()->filter(function ($project) use ($today, $inSevenDays) {
+            $dates = json_decode($project->post_qualification, true) ?: [];
+            foreach ($dates as $date) {
+                if ($date && Carbon::parse($date)->between($today, $inSevenDays)) {
+                    return true;
+                }
+            }
+            return false;
+        })->count();
 
 
         return view('pages.dashboard', [
@@ -259,6 +283,7 @@ class TrackingController extends Controller
             'prBelow50kCount' => $prBelow50kCount,
             'endUserGrouped' => $endUserGrouped,
             'pendingProjectsDetails' => $pendingProjectsDetails,
+            'upcomingPostQualificationCount' => $upcomingCount,
         ]);
     }
 
@@ -294,7 +319,7 @@ class TrackingController extends Controller
             $count = max(count($bidStatuses), count($remarks), count($lotDescriptions));
             for ($i = 0; $i < $count; $i++) {
                 $lots[] = [
-                    'lot_name' => $lotDescriptions[$i] ?? '',  
+                    'lot_name' => $lotDescriptions[$i] ?? '',
                     'bid_status' => $bidStatuses[$i] ?? '',
                     'remarks' => $remarks[$i] ?? '',
                 ];

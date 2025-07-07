@@ -9,7 +9,7 @@
 
     </div>
     <div class="w-full flex flex-col md:flex-row mb-4 justify-between items-center gap-4">
-        <input type="search" wire:model.live.debounce.500ms="search" placeholder="Search PR Number, Project, or End User"
+        <input type="search" wire:model.live.debounce.500ms="search" placeholder="Search PR Number or Procurement Project"
             class="w-full md:w-1/3 bg-gray-50 border border-gray-300 p-2 text-sm rounded focus:ring-blue-500 focus:border-blue-500">
 
         <div class="flex flex-col md:flex-row gap-2 w-full md:w-2/3 justify-end">

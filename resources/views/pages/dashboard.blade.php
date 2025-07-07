@@ -166,7 +166,6 @@
                                         <td class="p-3">{{ $project->procurement_project }}</td>
                                         <td class="p-3 w-80">
                                             <div class="flex items-center gap-2">
-                                                {{-- Received From Planning --}}
                                                 <span
                                                     class="px-3 py-2  rounded-full text-xs font-semibold flex items-center gap-1
                     {{ $project->date_received_from_planning ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500' }}">
@@ -181,7 +180,6 @@
                                                     Planning
                                                 </span>
 
-                                                {{-- Received by TWG --}}
                                                 <span
                                                     class="px-3 py-2 rounded-full text-xs font-semibold flex items-center gap-1
                     {{ $project->date_received_by_twg ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500' }}">
@@ -196,7 +194,6 @@
                                                     TWG
                                                 </span>
 
-                                                {{-- Approved PR Received --}}
                                                 <span
                                                     class="px-3 py-2 rounded-full text-xs  font-semibold flex items-center gap-1
                     {{ $project->approved_pr_received ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500' }}">
@@ -260,12 +257,30 @@
                                 @foreach ($othersGrouped as $other)
                                     <tr>
                                         <td class="p-3 border-b border-gray-300">
-                                            {{ $other->mode_of_procurement ?: 'N/A' }}
+                                            @php
+                                                $modes = json_decode($other->mode_of_procurement, true);
+                                            @endphp
+
+                                            @if (is_array($modes))
+                                                @foreach ($modes as $mode)
+                                                    <span
+                                                        class="inline-block bg-gray-300 text-gray-800 text-xs font-semibold mr-1 px-2.5 py-0.5 rounded-full">
+                                                        {{ $mode }}
+                                                    </span>
+                                                @endforeach
+                                            @else
+                                                <span
+                                                    class="inline-block bg-gray-300 text-gray-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                                                    {{ $other->mode_of_procurement ?: 'N/A' }}
+                                                </span>
+                                            @endif
                                         </td>
                                         <td class="p-3 border-b border-gray-300 whitespace-nowrap">{{ $other->total }}
                                         </td>
                                     </tr>
                                 @endforeach
+
+
                             </tbody>
                         </table>
                     </div>
