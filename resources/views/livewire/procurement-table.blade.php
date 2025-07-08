@@ -70,12 +70,14 @@
                     $statuses = json_decode($project->status, true);
                     $modeOfProcurements = json_decode($project->mode_of_procurement, true);
                     $lotDescriptions = json_decode($project->lot_description, true);
+                    $customModes = json_decode($project->custom_mode, true);
 
                     $statuses = is_array($statuses) ? $statuses : [$project->status];
                     $modeOfProcurements = is_array($modeOfProcurements)
                         ? $modeOfProcurements
                         : [$project->mode_of_procurement];
                     $lotDescriptions = is_array($lotDescriptions) ? $lotDescriptions : [];
+                    $customModes = is_array($customModes) ? $customModes : [];
                 @endphp
 
 
@@ -104,22 +106,29 @@
 
 
 
+
                     <td class="px-4 py-2 text-sm text-gray-600">
-                        <div class="flex flex-wrap gap-1">
-                            @foreach ($modeOfProcurements as $mode)
-                                <span class="px-3 py-1 rounded-full bg-gray-200 text-gray-700 text-sm">
-                                    {{ $mode }}
+                        <div class="flex flex-col gap-1  items-start">
+                            @foreach ($modeOfProcurements as $i => $mode)
+                                <span class="inline-flex px-3 py-1 rounded-full bg-gray-200 text-gray-700 text-sm">
+                                    @if ($mode === 'others' && !empty($customModes[$i]))
+                                        {{ $customModes[$i] }}
+                                    @else
+                                        {{ $mode }}
+                                    @endif
                                 </span>
                             @endforeach
                         </div>
                     </td>
 
 
+
+
                     <td class="px-4 py-2 text-sm">
                         <div class="flex flex-col gap-1 text-gray-600">
                             @foreach ($lotDescriptions as $description)
                                 <span
-                                    class="py-1 text-smcursor-pointer overflow-hidden text-ellipsis whitespace-nowrap"
+                                    class="py-1 text-sm cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap"
                                     style="max-width: 18rem;" data-fulltext="{{ $description }}"
                                     onclick="handleDescriptionClick(this)">
                                     {{ $description }}
@@ -127,9 +136,6 @@
                             @endforeach
                         </div>
                     </td>
-
-
-
 
                     <td class="px-4 py-2 text-sm text-gray-600">{{ $project->procurement_project }}</td>
 
@@ -140,21 +146,18 @@
 
                     <td class="px-4 py-2 text-sm text-gray-600 w-auto whitespace-nowrap">
                         <div class="flex gap-2">
-                            <!-- View Button -->
                             <a href="{{ route('project.action.view', ['selected_id' => $project->id]) }}"
                                 class="px-4 py-2 text-white bg-blue-400 rounded-md flex items-center justify-center hover:bg-blue-600 transition-colors duration-300"
                                 title="View Project">
                                 <i class="fa-solid fa-eye"></i>
                             </a>
 
-                            <!-- Edit Button -->
                             <a href="{{ route('project.action.edit', ['edit_id' => $project->id]) }}"
                                 class="px-4 py-2 text-white bg-green-400 rounded-md flex items-center justify-center hover:bg-green-600 transition-colors duration-300"
                                 title="Edit Project">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
 
-                            <!-- Delete Button -->
                             <button type="button"
                                 class="px-4 py-2 text-white bg-red-400 rounded-md flex items-center justify-center hover:bg-red-600 transition-colors duration-300"
                                 data-micromodal-trigger="modal-delete" data-project-id="{{ $project->id }}"

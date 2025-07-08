@@ -16,7 +16,7 @@ class TrackingController extends Controller
         $in = $request->validate([
             'procurement_project' => ['required', 'min:5'],
             'mode_of_procurement' => ['required', 'min:1'],
-            'custom_mode' => ['nullable', 'string', 'min:3'],
+            'custom_mode' => ['nullable', 'min:1'],
             'lot_description' => ['required', 'min:1'],
             'abc_per_lot' => ['required', 'min:1'],
             'end_user' => ['required', 'min:3', 'max:50'],
@@ -251,29 +251,37 @@ class TrackingController extends Controller
         )
             ->where('status', 'Pending')
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->get()
+            ->map(function ($project) {
+                $project->date_received_from_planning = json_decode($project->date_received_from_planning, true) ?: [];
+                $project->date_received_by_twg = json_decode($project->date_received_by_twg, true) ?: [];
+                $project->approved_pr_received = json_decode($project->approved_pr_received, true) ?: [];
 
-        // Add your upcoming post_qualification reminder count here
-        $today = Carbon::today();
-        $inSevenDays = Carbon::today()->addDays(7);
+                $project->date_received_from_planning_status = count($project->date_received_from_planning) > 0;
+                $project->date_received_by_twg_status = count($project->date_received_by_twg) > 0;
+                $project->approved_pr_received_status = count($project->approved_pr_received) > 0;
 
-        $upcomingCount = ProcurementProject::all()->filter(function ($project) use ($today, $inSevenDays) {
-            $dates = json_decode($project->post_qualification, true) ?: [];
-            foreach ($dates as $date) {
-                if ($date && Carbon::parse($date)->between($today, $inSevenDays)) {
-                    return true;
-                }
-            }
-            return false;
-        })->count();
-        // New variable with all upcoming dates (Carbon instances), unique and sorted
-        $upcomingDates = ProcurementProject::all()->flatMap(function ($project) use ($today, $inSevenDays) {
-            $dates = json_decode($project->post_qualification, true) ?: [];
-            return collect($dates)
-                ->filter(fn($date) => $date && Carbon::parse($date)->between($today, $inSevenDays))
-                ->map(fn($date) => Carbon::parse($date));
-        })->unique()->sort()->values();
+                return $project;
+            });
 
+
+
+
+
+        $pendingProjects = ProcurementProject::whereJsonContains('status', 'Pending')->get();
+        $pendingProjectsDetails = $pendingProjects->map(function ($project) {
+            return [
+                'procurement_project' => $project->procurement_project,
+                'pr_number' => $project->pr_number,
+                'lot_description' => json_decode($project->lot_description, true) ?: [],
+                'date_received_from_planning' => $project->date_received_from_planning,
+                'date_received_by_twg' => $project->date_received_by_twg,
+                'approved_pr_received' => $project->approved_pr_received,
+            ];
+        });
+
+
+        // dd($pendingProjectsDetails);
 
         return view('pages.dashboard', [
             'totalCount' => $totalCount,
@@ -290,39 +298,33 @@ class TrackingController extends Controller
             'prBelow50kCount' => $prBelow50kCount,
             'endUserGrouped' => $endUserGrouped,
             'pendingProjectsDetails' => $pendingProjectsDetails,
-            'upcomingPostQualificationCount' => $upcomingCount,
-            'upcomingPostQualificationDates' => $upcomingDates,
         ]);
     }
 
-
-
     public function reminders()
-{
-    $today = Carbon::today();
-    $inSevenDays = $today->copy()->addDays(7);
+    {
+        $today = Carbon::today();
+        $inSevenDays = $today->copy()->addDays(7);
+        $reminders = collect();
+        foreach (ProcurementProject::all() as $project) {
+            $dates = json_decode($project->post_qualification, true) ?: [];
+            $lotDescriptions = json_decode($project->lot_description, true) ?: [];
 
-    $reminders = collect();
-
-    foreach (ProcurementProject::all() as $project) {
-        $dates = json_decode($project->post_qualification, true) ?: [];
-        $lotDescriptions = json_decode($project->lot_description, true) ?: [];
-
-        foreach ($dates as $index => $date) {
-            if ($date && Carbon::parse($date)->between($today, $inSevenDays)) {
-                $reminders->push([
-                    'project' => $project->procurement_project,
-                    'date' => Carbon::parse($date)->format('F j, Y'),
-                    'lot_description' => $lotDescriptions[$index] ?? 'No Description',
-                ]);
+            foreach ($dates as $index => $date) {
+                if ($date && Carbon::parse($date)->between($today, $inSevenDays)) {
+                    $reminders->push([
+                        'project' => $project->procurement_project,
+                        'date' => Carbon::parse($date)->format('F j, Y'),
+                        'lot_description' => $lotDescriptions[$index] ?? 'No Description',
+                    ]);
+                }
             }
         }
-    }
 
-    return view('pages.post-qua', [
-        'upcomingReminders' => $reminders->sortBy('date')->values(),
-    ]);
-}
+        return view('pages.post-qua', [
+            'upcomingReminders' => $reminders->sortBy('date')->values(),
+        ]);
+    }
 
 
 

@@ -8,6 +8,8 @@
             <div class="flex gap-6">
                 <div class="flex flex-col flex-1 bg-white p-4 rounded-xl h-36">
                     <h2 class="font-semibold text-gray-600 text-lg">Purchase Request</h2>
+                    <p class="text-sm text-gray-500 font-medium">Total PR</p>
+
                     <div class="flex-1 flex justify-between items-end">
                         <div class="flex flex-col">
                             <h2 class="text-5xl font-bold text-amber-400">{{ $totalCount }}</h2>
@@ -20,6 +22,7 @@
                 </div>
                 <div class="flex flex-col flex-1 bg-white p-4 rounded-xl h-36">
                     <h2 class="font-semibold text-gray-600 text-lg">Public Bidding</h2>
+                    <p class="text-sm text-gray-500 font-medium">Total Lot</p>
                     <div class="flex-1 flex justify-between items-end   ">
                         <div class="flex flex-col">
                             <h2 class="text-5xl font-bold text-green-400">{{ $publicBiddingCount }}</h2>
@@ -32,6 +35,8 @@
                 </div>
                 <div class="flex flex-col flex-1 bg-white p-4 rounded-xl h-36">
                     <h2 class="font-semibold text-gray-500 text-lg">Direct Contracting</h2>
+                    <p class="text-sm text-gray-500 font-medium">Total Lot</p>
+
                     <div class="flex-1 flex justify-between items-end   ">
                         <div class="flex flex-col">
                             <h2 class="text-5xl font-bold text-indigo-400">{{ $directContractingCount }}</h2>
@@ -47,6 +52,7 @@
 
                 <div class="flex flex-col flex-1 bg-white p-4 rounded-xl h-36">
                     <h2 class="font-semibold text-gray-500 text-lg">Small Value Procurement</h2>
+                    <p class="text-sm text-gray-500 font-medium">Total Lot</p>
                     <div class="flex-1 flex justify-between items-end   ">
                         <div class="flex flex-col">
                             <h2 class="text-5xl font-bold text-blue-400">{{ $smallValueProcurementCount }}</h2>
@@ -59,6 +65,7 @@
                 </div>
                 <div class="flex flex-col flex-1 bg-white p-4 rounded-xl h-36">
                     <h2 class="font-semibold text-gray-500 text-lg">Emergency Cases</h2>
+                    <p class="text-sm text-gray-500 font-medium">Total Lot</p>
                     <div class="flex-1 flex justify-between items-end   ">
                         <div class="flex flex-col">
                             <h2 class="text-5xl font-bold text-red-400">{{ $emergencyCasesCount }}</h2>
@@ -71,6 +78,8 @@
                 </div>
                 <div class="flex flex-col flex-1 bg-white p-4 rounded-xl h-36">
                     <h2 class="font-semibold text-gray-600 text-lg">Others</h2>
+                    <p class="text-sm text-gray-500 font-medium">Total Lot</p>
+
                     <div class="flex-1 flex justify-between items-end">
                         <div class="flex flex-col">
                             <h2 class="text-5xl font-bold text-gray-500">{{ $othersCount }}</h2>
@@ -132,8 +141,6 @@
                     View Amount
                 </button>
             </div>
-
-
         </div>
 
 
@@ -141,30 +148,30 @@
 
 
 
-
-
-
-
-
-        <!-- Floating Modal -->
-        <div x-data="{ open: true }" x-show="open" x-transition
-            class="fixed bottom-12 right-12 w-80 bg-red-400 shadow-lg rounded-lg border border-red-300 z-50"
-            style="display: none;">
-            <div class="flex justify-between items-center p-4 border-b border-red-300">
-
-                <h3 class="text-lg  text-white"><i class="fa-solid fa-clipboard text-lg mr-1"></i>
-                    Reminder</h3>
-                <button @click="open = false"
-                    class="text-white hover:text-gray-200 focus:outline-none text-xl cursor-pointer"
-                    aria-label="Close modal">
-                    &times;
-                </button>
+        @if ($upcomingCount > 0)
+            <div x-data="{ open: false }" x-show="open" x-transition:enter="transition ease-out duration-500"
+                x-transition:enter-start="opacity-0 translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 translate-y-4"
+                class="fixed bottom-12 right-12 w-80 bg-red-400 shadow-lg rounded-lg border border-red-300 z-50"
+                style="display: none;" x-init="setTimeout(() => open = true, 1000)">
+                <div class="flex justify-between items-center p-4 border-b border-red-300">
+                    <h3 class="text-lg text-white">
+                        <i class="fa-solid fa-clipboard text-lg mr-1"></i> Reminder
+                    </h3>
+                    <button @click="open = false"
+                        class="text-white hover:text-gray-200 focus:outline-none text-xl cursor-pointer"
+                        aria-label="Close modal">
+                        &times;
+                    </button>
+                </div>
+                <div class="p-4 text-white text-sm">
+                    You have {{ $upcomingCount }} upcoming Post Qualification Presentation(s).
+                </div>
             </div>
-            <div class="p-4  text-white text-sm">
-                You have 4 upcoming Post Qualification Presentation(s).
-            </div>
-        </div>
+        @endif
     </div>
+
     <div class="modal micromodal-slide" id="modal-pending" aria-hidden="true">
         <div class="modal__overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
             tabindex="-1" data-micromodal-close>
@@ -175,9 +182,7 @@
                         Pending Projects
                     </h2>
                     <small class="text-gray-600">Track all the pending project status</small>
-
                 </header>
-
                 <main class="modal__content text-sm">
                     <div class="w-full max-h-96 overflow-y-auto">
                         <table class="w-full table-auto border-collapse">
@@ -191,14 +196,14 @@
                             <tbody>
                                 @forelse ($pendingProjectsDetails as $project)
                                     <tr class="border-b border-gray-300">
-                                        <td class="p-3 ">{{ $project->pr_number }}</td>
-                                        <td class="p-3">{{ $project->procurement_project }}</td>
+                                        <td class="p-3 ">{{ $project['pr_number'] }}</td>
+                                        <td class="p-3">{{ $project['procurement_project'] }}</td>
                                         <td class="p-3 w-80">
                                             <div class="flex items-center gap-2">
                                                 <span
-                                                    class="px-3 py-2  rounded-full text-xs font-semibold flex items-center gap-1
-                    {{ $project->date_received_from_planning ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500' }}">
-                                                    @if ($project->date_received_from_planning)
+                                                    class="px-3 py-2 rounded-full text-xs font-semibold flex items-center gap-1
+                    {{ $project['date_received_from_planning'] ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500' }}">
+                                                    @if ($project['date_received_from_planning'])
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
                                                             fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                                             stroke-width="3">
@@ -211,8 +216,8 @@
 
                                                 <span
                                                     class="px-3 py-2 rounded-full text-xs font-semibold flex items-center gap-1
-                    {{ $project->date_received_by_twg ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500' }}">
-                                                    @if ($project->date_received_by_twg)
+                    {{ $project['date_received_by_twg'] ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500' }}">
+                                                    @if ($project['date_received_by_twg'])
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
                                                             fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                                             stroke-width="3">
@@ -224,9 +229,9 @@
                                                 </span>
 
                                                 <span
-                                                    class="px-3 py-2 rounded-full text-xs  font-semibold flex items-center gap-1
-                    {{ $project->approved_pr_received ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500' }}">
-                                                    @if ($project->approved_pr_received)
+                                                    class="px-3 py-2 rounded-full text-xs font-semibold flex items-center gap-1
+                    {{ $project['approved_pr_received'] ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500' }}">
+                                                    @if ($project['approved_pr_received'])
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
                                                             fill="none" viewBox="0 0 24 24" stroke="currentColor"
                                                             stroke-width="3">
@@ -245,14 +250,12 @@
                                         </td>
                                     </tr>
                                 @endforelse
-                            </tbody>
 
                             </tbody>
                         </table>
 
                     </div>
                 </main>
-
                 <footer class="modal__footer mt-4 text-right">
                     <button class="bg-red-400 hover:bg-red-500 text-white text-sm px-4 py-2 rounded cursor-pointer"
                         data-micromodal-close>

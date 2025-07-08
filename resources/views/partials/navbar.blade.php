@@ -17,18 +17,19 @@
                 </span>
             @endif
 
-
-
             <div x-show="open" @click.outside="open = false" x-transition
                 class="absolute right-0 mt-5 w-64 bg-white border border-gray-200 rounded-lg z-50">
                 <div class="p-4 text-gray-700 font-semibold border-b border-gray-300">Reminders</div>
                 <div class="p-4 text-sm text-gray-700 border-b border-gray-300">
                     You have <strong>{{ $upcomingCount }}</strong> upcoming Post Qualification Presentation(s).
+
                     @php
+                        // Group $upcomingDates (a collection of Carbon dates) by formatted date string
                         $groupedDates = $upcomingDates
                             ->groupBy(fn($date) => $date->format('F j, Y'))
                             ->map(fn($group) => $group->count());
                     @endphp
+
                     @if ($groupedDates->isNotEmpty())
                         <div class="py-2 text-sm text-gray-600">
                             <strong>Dates:</strong>
@@ -37,7 +38,7 @@
                                     <li>
                                         {{ $dateString }}
                                         @if ($count > 1)
-                                            <span class="text-gray-500">x{{ $count }}</span>
+                                            <span class="text-gray-500">(x{{ $count }})</span>
                                         @endif
                                     </li>
                                 @endforeach
@@ -46,24 +47,15 @@
                     @endif
                 </div>
 
-
-
-
                 <div class="w-full">
                     <a href="/dashboard/reminders"
                         class="block text-center w-full bg-gray-100 text-gray-600 text-sm py-2 font-semibold hover:bg-gray-200 focus:outline-none rounded-b-md">
                         View All
                     </a>
-
                 </div>
             </div>
         </div>
 
-
-
-
-
         <img src="{{ asset('images/bfar.png') }}" alt="" width="48">
     </div>
-
 </div>

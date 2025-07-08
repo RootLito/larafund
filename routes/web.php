@@ -28,7 +28,7 @@ Route::middleware([AuthRedirect::class])->group(function () {
     Route::post('/tracking/export', [TrackingController::class, 'export'])->name('tracking.export');
     Route::post('/logout', [UserController::class, 'logout'])->name('logout');
     Route::get('/dashboard/reminders', [TrackingController::class, 'reminders'])->name('reminders.post-qua');
-
+    
     // User routes
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');

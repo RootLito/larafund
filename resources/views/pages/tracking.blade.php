@@ -57,7 +57,7 @@
                     class="w-full h-20 p-2 border bg-gray-50 border-gray-300 rounded resize-none text-sm"></textarea>
 
                 <div class="flex gap-2 items-end mt-3">
-                    <div class="flex flex-col w-96">
+                    <div class="flex flex-col flex-1">
                         <small>Mode of Procurement<span class="text-red-500">*</span></small>
                     </div>
 
@@ -71,18 +71,24 @@
 
                 <template x-for="(lot, index) in lots" :key="index">
                     <div class="flex gap-2 items-end mt-1">
-                        <div class="flex flex-col w-72">
-                            <select :name="'mode_of_procurement[]'" x-model="lot.mode_of_procurement"
-                                :id="'mode_of_procurement_' + index"
+                        <div x-data="{ lot: { mode_of_procurement: '' } }" class="flex flex-1 gap-2">
+                            <select name="mode_of_procurement[]" x-model="lot.mode_of_procurement" id="mode_of_procurement"
                                 class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded">
-                                <option value="" selected disabled>Select Mode of Procurement</option>
+                                <option value="" disabled selected>Select Mode of Procurement</option>
                                 <option value="Public Bidding">Public Bidding</option>
                                 <option value="Direct Contracting">Direct Contracting</option>
                                 <option value="Small Value Procurement">Small Value Procurement</option>
                                 <option value="Emergency Cases">Emergency Cases</option>
                                 <option value="others">Others</option>
                             </select>
+
+                            <input x-show="lot.mode_of_procurement === 'others'" type="text"
+                                name="custom_mode[]" placeholder="Specify mode of procurement"
+                                class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded" x-transition>
                         </div>
+
+
+
                         <div class="flex flex-col flex-1">
                             <input type="text" :name="'lot_description[]'" x-model="lot.description"
                                 class="w-full bg-gray-50 border border-gray-300 p-2 text-sm rounded"
@@ -96,7 +102,7 @@
                         </div>
                     </div>
 
-                    
+
                 </template>
 
                 <div class="flex gap-2 items-end mt-3">
@@ -120,22 +126,3 @@
         @livewire('procurement-table')
     </div>
 @endsection
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const select = document.getElementById('mode_of_procurement');
-        const input = document.getElementById('custom_mode_input');
-
-        function toggleInput() {
-            if (select.value === 'others') {
-                input.classList.remove('hidden');
-            } else {
-                input.classList.add('hidden');
-                input.value = '';
-            }
-        }
-
-        select.addEventListener('change', toggleInput);
-        toggleInput();
-    });
-</script>

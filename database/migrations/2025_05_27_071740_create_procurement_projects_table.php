@@ -40,7 +40,7 @@ return new class extends Migration
             $table->json('noa_number')->nullable();
             $table->json('canvasser')->nullable();
             $table->json('name_of_supplier')->nullable();
-            $table->json('contract_price', 15, 2)->nullable();
+            $table->json('contract_price')->nullable();
             $table->json('date_forwarded_to_gss')->nullable();
             $table->json('remarks')->nullable();
             $table->timestamps();
