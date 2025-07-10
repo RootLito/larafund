@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\Log;
 use Illuminate\Http\Request;
 use App\Models\ProcurementProject;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class TrackingController extends Controller
 {
@@ -313,6 +315,7 @@ class TrackingController extends Controller
             foreach ($dates as $index => $date) {
                 if ($date && Carbon::parse($date)->between($today, $inSevenDays)) {
                     $reminders->push([
+                        'id' => $project->id,
                         'project' => $project->procurement_project,
                         'date' => Carbon::parse($date)->format('F j, Y'),
                         'lot_description' => $lotDescriptions[$index] ?? 'No Description',
@@ -425,6 +428,49 @@ class TrackingController extends Controller
             'links' => (string) $projects->links(),
         ]);
     }
+
+
+
+
+
+    public function captureUpdate($project)
+    {
+        $changes = [];
+
+        // foreach ($project->getChanges() as $field => $newValue) {
+        //     if ($field === 'updated_at') continue;
+
+        //     $oldValue = $project->getOriginal($field);
+        //     $changes[] = "$field: '$oldValue' → '$newValue'";
+        // }
+        foreach ($project->getChanges() as $field => $newValue) {
+            if ($field === 'updated_at')
+                continue;
+
+            $oldValue = $project->getOriginal($field);
+
+            // Skip if values are effectively the same (e.g., null → '', or null → [null])
+            if (
+                (is_null($oldValue) && (empty($newValue) || $newValue === '[null]')) ||
+                ($oldValue === '' && (empty($newValue) || $newValue === '[null]')) ||
+                (json_encode($oldValue) === json_encode($newValue))
+            ) {
+                continue;
+            }
+
+            $changes[] = "$field: '" . json_encode($oldValue) . "' → '" . json_encode($newValue) . "'";
+        }
+
+
+        if (!empty($changes)) {
+            Log::create([
+                'user_name' => Auth::user()?->name ?? 'System',
+                'model_name' => 'ProcurementProject',
+                'changed_fields' => implode(', ', $changes),
+            ]);
+        }
+    }
+
 
 
 }

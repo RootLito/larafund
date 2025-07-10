@@ -38,6 +38,18 @@
             <i class="fas fa-calendar ml-5"></i>
             Calendar
         </a>
+
+
+        @auth
+            @if (auth()->user()->role === 'admin')
+                <a href="/logs"
+                    class="flex bg-gray-100 items-center gap-2 h-10 text-sm font-semibold text-gray-700 rounded-md hover:bg-gray-200 hover:text-gray-600 transition-all 
+          {{ request()->is('logs*') ? 'bg-gray-300 text-gray-700' : '' }}">
+                    <i class="fa-solid fa-table-list ml-5"></i>
+                    Activity Logs
+                </a>
+            @endif
+        @endauth
     </nav>
 
 

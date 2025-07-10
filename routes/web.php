@@ -1,6 +1,7 @@
 <?php
 use App\Http\Middleware\AuthRedirect;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LogController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TrackingController;
 
@@ -36,6 +37,9 @@ Route::middleware([AuthRedirect::class])->group(function () {
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::post('/users/register', [UserController::class, 'register'])->name('users.register');
+
+    //log routes
+    Route::get('/logs', [LogController::class, 'index'])->name('logs.index');
 });
 
 

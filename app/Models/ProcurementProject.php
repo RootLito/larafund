@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Http\Controllers\TrackingController;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProcurementProject extends Model
 {
@@ -44,5 +45,12 @@ class ProcurementProject extends Model
         'date_forwarded_to_gss',
         'remarks',
     ];
+
+    protected static function booted()
+{
+    static::updated(function ($project) {
+        app(TrackingController::class)->captureUpdate($project);
+    });
+}
 
 }
