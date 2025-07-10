@@ -5,17 +5,17 @@
 @section('content')
     <div class="w-full h-full flex flex-col gap-10 p-10">
         <div class="w-full h-full bg-white p-6 rounded-lg">
-            <a href="javascript:history.back()" class="flex items-center text-red-400 font-bold hover:text-red-600">
+            {{-- <a href="javascript:history.back()" class="flex items-center text-red-400 font-bold hover:text-red-600">
                 <i class="fa-solid fa-arrow-left mr-2"></i>
                 Back
-            </a>
+            </a> --}}
 
-            @if ($selectedProject)
+            {{-- @if ($selectedProject)
                 <h2 class="text-5xl">Selected ID is: {{ $selectedProject->id }}</h2>
                 <p>{{ $selectedProject->procurement_project ?? 'N/A' }}</p>
             @else
                 <h2 class="text-5xl">No Project Found</h2>
-            @endif
+            @endif --}}
 
 
             <div style="background-color: rgba(0,0,0,0.6)"
@@ -24,17 +24,20 @@
                     <header class="view-modal-header">
                         <h2 class="view-modal-title mb-8 text-2xl font-semibold text-gray-600">PR Details</h2>
                     </header>
+
                     <main class="view-modal-content overflow-auto">
-                        <div class="h-full">
+                        <div class="">
                             <form action="">
                                 <table
                                     class="w-full table-auto border-collapse border border-gray-300 rounded-lg overflow-hidden">
                                     <thead class="border-b border-gray-300">
                                         <tr class="bg-gray-100 text-gray-600">
                                             <th class="px-4 py-4 text-left text-sm whitespace-nowrap">Status</th>
-                                            <th class="px-4 py-2 text-left text-sm whitespace-nowrap">Procurement Project
+                                            <th class="px-4 py-2 text-left text-sm whitespace-nowrap">
+                                                <div class="w-52">Procurement Project</div>
                                             </th>
-                                            <th class="px-4 py-2 text-left text-sm whitespace-nowrap">Lot and Description
+                                            <th class="px-4 py-2 text-left text-sm whitespace-nowrap">
+                                                <div class="w-72">Lot and Description</div>
                                             </th>
                                             <th class="px-4 py-2 text-left text-sm whitespace-nowrap">ABC per Lot</th>
                                             <th class="px-4 py-2 text-left text-sm whitespace-nowrap">Total ABC</th>
@@ -72,24 +75,10 @@
 
                                     <tbody>
                                         <tr>
-                                            <td class="px-4 py-4 text-left text-sm whitespace-nowrap">
-                                                <span
-                                                    class="text-sm px-4 py-1 rounded-full text-white
-                                                {{ $selectedProject->status == 'Pending'
-                                                    ? 'bg-yellow-500'
-                                                    : ($selectedProject->status == 'Completed'
-                                                        ? 'bg-green-500'
-                                                        : ($selectedProject->status == 'In Progress'
-                                                            ? 'bg-blue-500'
-                                                            : ($selectedProject->status == 'Reimbursement'
-                                                                ? 'bg-purple-500'
-                                                                : ($selectedProject->status == 'Cancelled'
-                                                                    ? 'bg-red-500'
-                                                                    : 'bg-gray-500')))) }}">
-                                                    {{ $selectedProject->status }}
-                                                </span>
-                                            </td>
+
                                             @php
+                                                $statuses = json_decode($selectedProject->status ?? '[]', true);
+
                                                 $lotDescriptions = json_decode(
                                                     $selectedProject->lot_description ?? '[]',
                                                     true,
@@ -131,16 +120,50 @@
                                             @endphp
 
                                             <td class="px-4 py-4 text-left text-sm">
-                                                {{ $selectedProject->procurement_project ?? 'N/A' }}
+                                                @forelse ($statuses as $status)
+                                                    <div class="py-1">
+                                                        <span
+                                                            class="text-sm px-4 py-1 rounded-full text-white
+                {{ $status == 'Pending'
+                    ? 'bg-yellow-500'
+                    : ($status == 'Completed'
+                        ? 'bg-green-500'
+                        : ($status == 'In Progress'
+                            ? 'bg-blue-500'
+                            : ($status == 'Reimbursement'
+                                ? 'bg-purple-500'
+                                : ($status == 'Cancelled'
+                                    ? 'bg-red-500'
+                                    : 'bg-gray-500')))) }}">
+                                                            {{ $status }}
+                                                        </span>
+                                                    </div>
+                                                @empty
+                                                    <div class="py-1 text-gray-400">N/A</div>
+                                                @endforelse
                                             </td>
 
                                             <td class="px-4 py-4 text-left text-sm">
-                                                @forelse ($lotDescriptions as $desc)
-                                                    <div class="py-1">{{ $desc }}</div>
-                                                @empty
-                                                    N/A
-                                                @endforelse
+                                                {{ $selectedProject->procurement_project ?? 'N/A' }}
                                             </td>
+
+                                            <td class="px-4 py-2 text-sm">
+                                                <div class="flex flex-col ">
+                                                    @forelse ($lotDescriptions as $description)
+                                                        <span
+                                                            class="py-1 text-sm cursor-pointer overflow-hidden text-ellipsis whitespace-nowrap"
+                                                            style="max-width: 18rem;" 
+                                                            title="{{ $description }}"
+                                                            data-fulltext="{{ $description }}"
+                                                            onclick="handleDescriptionClick(this)">
+                                                            {{ $description }}
+                                                        </span>
+                                                    @empty
+                                                        <span class="text-gray-400">N/A</span>
+                                                    @endforelse
+                                                </div>
+                                            </td>
+
 
                                             <td class="px-4 py-4 text-left text-sm">
                                                 @forelse ($abcPerLots as $abc)
@@ -282,5 +305,32 @@
                 </div>
             </div>
         </div>
+        <div id="descriptionModal" class="fixed inset-0  hidden items-center justify-center z-50"
+            style="background-color: rgba(0, 0, 0, 0.4);">
+            <div class="bg-white w-full max-w-md rounded-lg shadow p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold">Lot Description</h2>
+                    <button onclick="closeDescriptionModal()"
+                        class="text-gray-500 hover:text-black text-2xl cursor-pointer">&times;</button>
+                </div>
+                <div id="modalDescriptionContent" class="text-sm text-gray-700 whitespace-pre-wrap"></div>
+            </div>
+        </div>
     </div>
 @endsection
+<script>
+    function handleDescriptionClick(element) {
+        // Only open modal if content is truncated (i.e., showing "...")
+        if (element.scrollWidth > element.clientWidth) {
+            const fullText = element.getAttribute('data-fulltext');
+            document.getElementById('modalDescriptionContent').textContent = fullText;
+            document.getElementById('descriptionModal').classList.remove('hidden');
+            document.getElementById('descriptionModal').classList.add('flex');
+        }
+    }
+
+    function closeDescriptionModal() {
+        document.getElementById('descriptionModal').classList.add('hidden');
+        document.getElementById('descriptionModal').classList.remove('flex');
+    }
+</script>

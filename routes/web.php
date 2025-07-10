@@ -40,6 +40,8 @@ Route::middleware([AuthRedirect::class])->group(function () {
 
     //log routes
     Route::get('/logs', [LogController::class, 'index'])->name('logs.index');
+    Route::get('/logs/filtered', [TrackingController::class, 'filteredLogs'])->name('logs.filtered');
+
 });
 
 

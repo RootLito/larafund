@@ -8,7 +8,6 @@ class Log extends Model
 {
     protected $fillable = [
         'user_name',
-        'model_name',
         'changed_fields',
         'procurement_project',
         'lot_description',

@@ -7,25 +7,10 @@
 
 
     <div class="container mx-auto p-10">
-        <div class="flex w-full justify-between mb-5">
             <h1 class="text-xl font-bold mb-4 text-gray-700">
                 Upcoming Post-Qualification Reminders
             </h1>
 
-            <div class="flex gap-5">
-                <select name="" id="">
-                    <option value="">days</option>
-                    <option value="">week</option>
-                    <option value="">month</option>
-                </select>
-                <select name="" id="">
-                    <option value="">days</option>
-                    <option value="">week</option>
-                    <option value="">month</option>
-                </select>
-                <button class="bg-gray-600 w-32 rounded cursor-pointer text-white text-xs">Filter</button>
-            </div>
-        </div>
 
         @if ($upcomingReminders->isEmpty())
             <p class="text-gray-500">No upcoming reminders found.</p>

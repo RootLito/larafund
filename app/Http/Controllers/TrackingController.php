@@ -283,7 +283,6 @@ class TrackingController extends Controller
         });
 
 
-        // dd($pendingProjectsDetails);
 
         return view('pages.dashboard', [
             'totalCount' => $totalCount,
@@ -435,42 +434,103 @@ class TrackingController extends Controller
 
     public function captureUpdate($project)
     {
+        $userName = Auth::user()?->name ?? 'System';
+
         $changes = [];
 
-        // foreach ($project->getChanges() as $field => $newValue) {
-        //     if ($field === 'updated_at') continue;
-
-        //     $oldValue = $project->getOriginal($field);
-        //     $changes[] = "$field: '$oldValue' → '$newValue'";
-        // }
         foreach ($project->getChanges() as $field => $newValue) {
             if ($field === 'updated_at')
                 continue;
 
             $oldValue = $project->getOriginal($field);
 
-            // Skip if values are effectively the same (e.g., null → '', or null → [null])
-            if (
-                (is_null($oldValue) && (empty($newValue) || $newValue === '[null]')) ||
-                ($oldValue === '' && (empty($newValue) || $newValue === '[null]')) ||
-                (json_encode($oldValue) === json_encode($newValue))
-            ) {
-                continue;
+            $oldDecoded = json_decode($oldValue, true);
+            $newDecoded = json_decode($newValue, true);
+
+            if (json_last_error() === JSON_ERROR_NONE) {
+                if ($oldDecoded === $newDecoded) {
+                    continue;
+                }
+            } else {
+                if (trim($oldValue) === trim($newValue)) {
+                    continue;
+                }
             }
 
-            $changes[] = "$field: '" . json_encode($oldValue) . "' → '" . json_encode($newValue) . "'";
+            $changes[$field] = ['old' => $oldValue, 'new' => $newValue];
         }
 
 
-        if (!empty($changes)) {
-            Log::create([
-                'user_name' => Auth::user()?->name ?? 'System',
-                'model_name' => 'ProcurementProject',
-                'changed_fields' => implode(', ', $changes),
-            ]);
+        if (empty($changes)) {
+            return;
         }
+
+        $procurementProject = $project->procurement_project ?? '';
+        if (isset($changes['procurement_project'])) {
+            $procurementProject = $changes['procurement_project']['new'];
+            unset($changes['procurement_project']);
+        }
+
+        $lotDescription = '';
+        if (isset($changes['lot_description'])) {
+            $decodedLots = json_decode($changes['lot_description']['new'], true);
+            $lotDescription = is_array($decodedLots) ? implode(', ', $decodedLots) : $changes['lot_description']['new'];
+            unset($changes['lot_description']);
+        } elseif ($project->lot_description) {
+            $decodedLots = is_array($project->lot_description)
+                ? $project->lot_description
+                : json_decode($project->lot_description, true);
+            $lotDescription = is_array($decodedLots) ? implode(', ', $decodedLots) : '';
+        }
+
+        $changesText = "";
+        foreach ($changes as $field => $vals) {
+            $oldVal = $vals['old'];
+            $newVal = $vals['new'];
+
+            $decodedOld = json_decode($oldVal, true);
+            $decodedNew = json_decode($newVal, true);
+
+            $oldDisplay = is_array($decodedOld) ? implode(', ', $decodedOld) : (string) $oldVal;
+            $newDisplay = is_array($decodedNew) ? implode(', ', $decodedNew) : (string) $newVal;
+
+            $changesText .= "- $field: '$oldDisplay' → '$newDisplay'\n";
+        }
+
+        Log::create([
+            'user_name' => $userName,
+            'changed_fields' => trim($changesText),
+            'procurement_project' => $procurementProject,
+            'lot_description' => $lotDescription,
+        ]);
     }
 
+
+    public function filteredLogs(Request $request)
+    {
+        $filter = $request->input('filter_date', 'today');
+
+        $logsQuery = Log::query();
+
+        switch ($filter) {
+            case 'today':
+                $logsQuery->whereDate('created_at', now()->toDateString());
+                break;
+            case 'yesterday':
+                $logsQuery->whereDate('created_at', now()->subDay()->toDateString());
+                break;
+            case 'last_week':
+                $logsQuery->whereBetween('created_at', [now()->subWeek()->startOfWeek(), now()->subWeek()->endOfWeek()]);
+                break;
+            case 'all':
+            default:
+                break;
+        }
+
+        $logs = $logsQuery->orderBy('created_at', 'desc')->paginate(5);
+
+        return view('pages.logs', compact('logs', 'filter'));
+    }
 
 
 }
