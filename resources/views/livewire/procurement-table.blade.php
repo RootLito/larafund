@@ -141,9 +141,6 @@
 
 
 
-                    {{-- <td class="px-4 py-2 text-sm text-gray-600">₱{{ number_format($project->total_abc, 2) }}</td>
-                    <td class="px-4 py-2 text-sm text-gray-600">{{ $project->end_user }}</td> --}}
-
                     <td class="px-4 py-2 text-sm text-gray-600 w-auto whitespace-nowrap">
                         <div class="flex gap-2">
                             <a href="{{ route('project.action.view', ['selected_id' => $project->id]) }}"
@@ -180,56 +177,6 @@
     <div class="mt-4">
         {{ $projects->links() }}
     </div>
-
-
-    {{-- @php
-        $currentPage = $projects->currentPage();
-        $lastPage = $projects->lastPage();
-
-        $startPage = max(min($currentPage - 1, $lastPage - 2), 1);
-        $endPage = min($startPage + 2, $lastPage);
-    @endphp
-
-    <div class="mt-4 flex justify-center">
-        <div class="inline-flex text-sm rounded overflow-hidden select-none border border-gray-200">
-            @if ($projects->onFirstPage())
-                <span
-                    class="px-5 py-2 bg-gray-100 text-gray-400 cursor-not-allowed flex items-center border-r border-gray-200 rounded-l">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </span>
-            @else
-                <button wire:click="previousPage"
-                    class="px-5 py-2 bg-white hover:bg-gray-50 text-gray-600 cursor-pointer flex items-center border-r border-gray-200 rounded-l">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-            @endif
-
-            @for ($page = $startPage; $page <= $endPage; $page++)
-                @if ($page == $currentPage)
-                    <span
-                        class="px-5 py-2 bg-gray-300 text-gray-900 font-semibold flex items-center border-r border-gray-200">
-                        {{ $page }}
-                    </span>
-                @else
-                    <button wire:click="gotoPage({{ $page }})"
-                        class="px-5 py-2 bg-white hover:bg-gray-50 text-gray-600 cursor-pointer flex items-center border-r border-gray-200">
-                        {{ $page }}
-                    </button>
-                @endif
-            @endfor
-
-            @if ($projects->hasMorePages())
-                <button wire:click="nextPage"
-                    class="px-5 py-2 bg-white hover:bg-gray-50 text-gray-600 cursor-pointer flex items-center rounded-r">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
-            @else
-                <span class="px-5 py-2 bg-gray-100 text-gray-400 cursor-not-allowed flex items-center rounded-r">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </span>
-            @endif
-        </div>
-    </div> --}}
 
 
 
@@ -296,7 +243,6 @@
 </script>
 <script>
     function handleDescriptionClick(element) {
-        // Only open modal if content is truncated (i.e., showing "...")
         if (element.scrollWidth > element.clientWidth) {
             const fullText = element.getAttribute('data-fulltext');
             document.getElementById('modalDescriptionContent').textContent = fullText;
