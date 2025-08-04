@@ -12,7 +12,7 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'profile' => ['nullable', 'image', 'max:2048'], // profile picture optional
+            'profile' => ['nullable', 'image', 'max:2048'], 
             'name' => ['required', 'min:3', 'max:20'],
             'role' => ['required', 'string', 'max:50'],
             'username' => ['required', 'string', 'max:255', 'unique:users'],
