@@ -13,7 +13,22 @@ return new class extends Migration
     {
         Schema::create('procurement_projects', function (Blueprint $table) {
             $table->id();
-            $table->string('status');
+
+            $table->json('status')->nullable();
+            $table->json('mode_of_procurement')->nullable();
+            $table->json('custom_mode')->nullable();
+            $table->json('bid_status')->nullable();
+
+
+
+
+            $table->json('philgeps_advertisement')->nullable();
+            $table->json('pre_bid_conference')->nullable();
+            $table->json('post_qualification')->nullable();
+
+            
+
+
             $table->text('procurement_project');
 
             $table->json('lot_description');

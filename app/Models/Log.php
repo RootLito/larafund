@@ -12,6 +12,4 @@ class Log extends Model
         'procurement_project',
         'lot_description',
     ];
-
-
 }

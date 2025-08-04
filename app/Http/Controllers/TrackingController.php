@@ -501,7 +501,7 @@ class TrackingController extends Controller
             'user_name' => $userName,
             'changed_fields' => trim($changesText),
             'procurement_project' => $procurementProject,
-            'lot_description' => $lotDescription,
+            'lot_description' => json_encode($lotDescription),
         ]);
     }
 
